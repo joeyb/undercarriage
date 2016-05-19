@@ -1,0 +1,4 @@
+rootProject.name = 'undercarriage'
+include 'config-yaml'
+include 'core'
+include 'example'

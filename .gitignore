@@ -1,0 +1,27 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Gradle
+!gradle/wrapper/gradle-wrapper.jar
+.gradle
+build/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+generated/
+generated_tests/
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes

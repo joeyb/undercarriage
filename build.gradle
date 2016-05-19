@@ -1,0 +1,48 @@
+plugins {
+    id 'nebula.project' version '3.1.0'
+    id 'nebula.provided-base' version '3.0.3'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'nebula.project'
+    apply plugin: 'nebula.provided-base'
+
+    group 'org.joeyb.undercarriage'
+
+    sourceCompatibility = 1.8
+
+    dependencies {
+        // For provided dependencies we need to explicitly exclude any transitive dependencies that we also need at
+        // runtime, otherwise the provided scope plugin will explicitly exclude them at runtime.
+        provided ("com.google.dagger:dagger-compiler:$daggerVersion") {
+            exclude group: 'com.google.dagger', module: 'dagger'
+            exclude group: 'com.google.guava', module: 'guava'
+        }
+        provided "org.immutables:value:$immutablesVersion"
+
+        compile "com.google.dagger:dagger:$daggerVersion"
+
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.assertj:assertj-core:$assertjVersion"
+        testCompile "org.mockito:mockito-core:$mockitoVersion"
+    }
+
+    idea {
+        module {
+            def generatedMainDir = file("src/main/generated")
+            def generatedTestDir = file("src/test/generated_tests")
+
+            sourceDirs += generatedMainDir
+            testSourceDirs += generatedTestDir
+
+            generatedSourceDirs += generatedMainDir
+            generatedSourceDirs += generatedTestDir
+        }
+    }
+}
