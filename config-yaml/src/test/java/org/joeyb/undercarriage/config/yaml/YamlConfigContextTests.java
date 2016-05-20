@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 public class YamlConfigContextTests {
 
     @Test
-    public void test() {
+    public void configSuccessfullyReadsGivenSimpleYamlConfig() {
         final String value = UUID.randomUUID().toString();
 
         YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
@@ -23,12 +23,7 @@ public class YamlConfigContextTests {
         when(yamlConfigReader.readConfigs()).thenReturn(
                 ImmutableList.of("value: " + value));
 
-        YamlConfigContext<ValueConfig> yamlConfigContext = new YamlConfigContext<ValueConfig>(yamlConfigReader) {
-            @Override
-            public Class<ValueConfig> configClass() {
-                return ValueConfig.class;
-            }
-        };
+        YamlConfigContext<ValueConfig> yamlConfigContext = new YamlConfigContext<ValueConfig>(yamlConfigReader) { };
 
         ValueConfig config = yamlConfigContext.config();
 
