@@ -84,10 +84,6 @@ public class SparkApplicationBaseTests {
         verify(service).init();
     }
 
-    private interface SparkConfigContext extends ConfigContext<SparkConfigSection> {
-
-    }
-
     private static class MockSparkApplication extends SparkApplicationBase<SparkConfigSection> {
 
         MockSparkApplication(ConfigContext<SparkConfigSection> configContext, Service service) {

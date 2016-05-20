@@ -23,4 +23,11 @@ public class TestSparkApplicationConfigModule {
                                 .build())
                         .build());
     }
+
+    @Provides
+    public static ConfigContext<? extends TestSparkConfig> provideTestSparkConfigConfigContext(
+            ConfigContext<TestSparkConfig> configContext) {
+
+        return configContext;
+    }
 }

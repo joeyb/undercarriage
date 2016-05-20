@@ -20,4 +20,17 @@ public class TestSparkApplicationTests {
 
         application.stop();
     }
+
+    @Test
+    public void pluginPingEndpointShouldRespondWithPong() {
+        TestSparkApplication application = DaggerTestSparkApplicationComponent.create().application();
+
+        application.start();
+
+        given().port(application.port()).get("/plugin-ping")
+                .then().statusCode(200)
+                .and().body(is("plugin-pong"));
+
+        application.stop();
+    }
 }
