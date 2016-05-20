@@ -1,12 +1,12 @@
-package org.joeyb.undercarriage.spark.dagger;
+package org.joeyb.undercarriage.spark.example.dagger;
 
 import dagger.Module;
 import dagger.Provides;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ManualConfigContext;
-import org.joeyb.undercarriage.spark.ImmutableTestSparkConfig;
-import org.joeyb.undercarriage.spark.TestSparkConfig;
 import org.joeyb.undercarriage.spark.config.ImmutableSparkConfig;
+import org.joeyb.undercarriage.spark.example.ImmutableTestSparkConfig;
+import org.joeyb.undercarriage.spark.example.TestSparkConfig;
 
 import javax.inject.Singleton;
 

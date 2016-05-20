@@ -21,7 +21,9 @@ public interface SparkApplication<ConfigT extends SparkConfigSection> extends Ap
     int port();
 
     /**
-     * Returns the app's underlying Spark {@link Service} instance.
+     * Returns the app's underlying Spark {@link Service} instance. It's important for consumers to be aware that Spark
+     * is set up to automatically start the underlying web server as soon as a route is added, so the route
+     * configuration should all be done during the application's {@link Application#start()} lifecycle phase.
      */
     Service service();
 }

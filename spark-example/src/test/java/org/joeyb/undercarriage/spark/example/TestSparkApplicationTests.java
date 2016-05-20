@@ -1,6 +1,6 @@
-package org.joeyb.undercarriage.spark;
+package org.joeyb.undercarriage.spark.example;
 
-import org.joeyb.undercarriage.spark.dagger.DaggerTestSparkApplicationComponent;
+import org.joeyb.undercarriage.spark.example.dagger.DaggerTestSparkApplicationComponent;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.given;
