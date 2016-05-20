@@ -49,13 +49,37 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      */
     @Override
     public void configure() {
-        if (isConfigured) {
+        if (isConfigured()) {
             throw new IllegalStateException("Applications can only be configured once.");
         }
 
         plugins().forEach(Plugin::configure);
 
         isConfigured = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConfigured() {
+        return isConfigured;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isStopped() {
+        return isStopped;
     }
 
     /**
@@ -87,7 +111,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      */
     @Override
     public void start() {
-        if (isStarted) {
+        if (isStarted()) {
             throw new IllegalStateException("Applications can only be started once.");
         }
 
@@ -103,11 +127,11 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      */
     @Override
     public void stop() {
-        if (isStopped) {
+        if (isStopped()) {
             throw new IllegalStateException("Applications can only be stopped once.");
         }
 
-        if (!isStarted) {
+        if (!isStarted()) {
             throw new IllegalStateException("Applications must be started before they can be stopped.");
         }
 

@@ -102,6 +102,40 @@ public class ApplicationBaseTests {
     }
 
     @Test
+    public void isConfiguredIsSetByConfigure() {
+        MockApplication application = new MockApplication(configContext);
+
+        assertThat(application.isConfigured()).isEqualTo(false);
+
+        application.configure();
+
+        assertThat(application.isConfigured()).isEqualTo(true);
+    }
+
+    @Test
+    public void isStartedIsSetByStart() {
+        MockApplication application = new MockApplication(configContext);
+
+        assertThat(application.isStarted()).isEqualTo(false);
+
+        application.start();
+
+        assertThat(application.isStarted()).isEqualTo(true);
+    }
+
+    @Test
+    public void isStoppedIsSetByStop() {
+        MockApplication application = new MockApplication(configContext);
+
+        assertThat(application.isStopped()).isEqualTo(false);
+
+        application.start();
+        application.stop();
+
+        assertThat(application.isStopped()).isEqualTo(true);
+    }
+
+    @Test
     public void pluginReturnsTheExpectedInstanceIfItIsEnabled() {
         MockPlugin plugin = new MockPlugin();
 

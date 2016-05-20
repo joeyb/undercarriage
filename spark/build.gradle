@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':core')
+
+    compile "com.sparkjava:spark-core:$sparkVersion"
+
+    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    testCompile "org.powermock:powermock-api-mockito2:$powermockVersion"
+    testCompile "org.powermock:powermock-module-junit4:$powermockVersion"
+}

@@ -25,6 +25,21 @@ public interface Application<ConfigT extends ConfigSection> {
     void configure();
 
     /**
+     * Returns whether or not {@link #configure()} has been executed for the application.
+     */
+    boolean isConfigured();
+
+    /**
+     * Returns whether or not {@link #start()} has been executed for the application.
+     */
+    boolean isStarted();
+
+    /**
+     * Returns whether or not {@link #stop()} has been executed for the application.
+     */
+    boolean isStopped();
+
+    /**
      * Returns the instance of the enabled plugin with the given type.
      *
      * @param pluginClass the requested plugin type
