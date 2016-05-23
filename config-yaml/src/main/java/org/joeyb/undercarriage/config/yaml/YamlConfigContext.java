@@ -12,6 +12,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
+import org.joeyb.undercarriage.core.config.substitutors.ConfigSubstitutor;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,9 +34,11 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(new Jdk8Module());
 
+    private final ConfigSubstitutor configSubstitutor;
     private final YamlConfigReader yamlConfigReader;
 
-    protected YamlConfigContext(YamlConfigReader yamlConfigReader) {
+    protected YamlConfigContext(ConfigSubstitutor configSubstitutor, YamlConfigReader yamlConfigReader) {
+        this.configSubstitutor = configSubstitutor;
         this.yamlConfigReader = yamlConfigReader;
     }
 
@@ -88,6 +91,7 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
 
         final JsonNode mergedJsonNode = configs.stream()
                 .filter(s -> !Strings.isNullOrEmpty(s))
+                .map(configSubstitutor::substitute)
                 .map(s -> wrapChecked(() -> objectMapper.readValue(s, JsonNode.class)))
                 .reduce(YamlConfigContext::mergeJsonNodes)
                 .orElse(objectMapper.createObjectNode());
