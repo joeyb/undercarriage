@@ -8,6 +8,7 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.core.plugins.PluginSorter;
 import org.joeyb.undercarriage.core.plugins.TopologicalPluginSorter;
+import org.joeyb.undercarriage.core.utils.Iterables;
 
 import java.security.InvalidParameterException;
 import java.util.Optional;
@@ -88,7 +89,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     @Override
     @SuppressWarnings("unchecked")
     public <PluginT extends Plugin<? super ConfigT>> PluginT plugin(Class<PluginT> pluginClass) {
-        Optional<Plugin<? super ConfigT>> plugin = plugins.get().stream()
+        Optional<Plugin<? super ConfigT>> plugin = Iterables.stream(plugins())
                 .filter(p -> p.getClass().equals(pluginClass))
                 .findFirst();
 
@@ -104,6 +105,18 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     @Override
     public Iterable<Plugin<? super ConfigT>> plugins() {
         return plugins.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <PluginT extends Plugin<? super ConfigT>> Iterable<PluginT> plugins(Class<PluginT> pluginClass) {
+        return ImmutableList.copyOf(Iterables.stream(plugins())
+                .filter(p -> pluginClass.isAssignableFrom(p.getClass()))
+                .map(p -> (PluginT) p)
+                .iterator());
     }
 
     /**

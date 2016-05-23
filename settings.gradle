@@ -4,3 +4,5 @@ include 'core'
 include 'example'
 include 'spark'
 include 'spark-example'
+include 'grpc'
+
