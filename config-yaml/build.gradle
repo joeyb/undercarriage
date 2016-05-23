@@ -5,5 +5,4 @@ dependencies {
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
     compile "net.jodah:typetools:$typetoolsVersion"
-    compile "org.bigtesting:interpolatd:$interpolatdVersion"
 }
