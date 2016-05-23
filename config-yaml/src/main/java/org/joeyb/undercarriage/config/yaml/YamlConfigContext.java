@@ -12,15 +12,18 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
+import org.joeyb.undercarriage.core.config.substitutors.ConfigSubstitutor;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 import static org.joeyb.undercarriage.core.utils.Exceptions.wrapChecked;
 
+import net.jodah.typetools.TypeResolver;
+
 /**
  * {@code YamlConfigContext} is a {@link ConfigContext} implementation that reads the config from YAML files. Due to
- * type erasure, the class is abstract because it needs an implementation for the {@link #configClass()} method.
+ * type erasure, the class is abstract in order for the {@link #configClass()} method to work properly.
  *
  * @param <ConfigT> the app's config type
  */
@@ -31,9 +34,11 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(new Jdk8Module());
 
+    private final ConfigSubstitutor configSubstitutor;
     private final YamlConfigReader yamlConfigReader;
 
-    protected YamlConfigContext(YamlConfigReader yamlConfigReader) {
+    protected YamlConfigContext(ConfigSubstitutor configSubstitutor, YamlConfigReader yamlConfigReader) {
+        this.configSubstitutor = configSubstitutor;
         this.yamlConfigReader = yamlConfigReader;
     }
 
@@ -46,11 +51,22 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
     }
 
     /**
-     * Returns the {@link Class} for the app's config. This is unfortunately necessary due to type erasure. Jackson
-     * needs the {@link Class} to do its deserialization.
+     * Returns the {@link Class} for the app's config. {@link YamlConfigContext} must be {@code abstract} for this to
+     * work properly due to type erasure.
      */
-    public abstract Class<ConfigT> configClass();
+    @SuppressWarnings("unchecked")
+    private Class<ConfigT> configClass() {
+        return (Class<ConfigT>) TypeResolver.resolveRawArgument(YamlConfigContext.class, getClass());
+    }
 
+    /**
+     * Merges two {@link JsonNode} instances and stores the merged result in the given {@code mainNode}. If the two
+     * nodes share a common field, then the value from {@code updateNode} takes precedence.
+     *
+     * @param mainNode the initial node that will be mutated and returned
+     * @param updateNode the overwriting node
+     * @return mutated version of mainNode with values pulled from updateNode
+     */
     private static JsonNode mergeJsonNodes(JsonNode mainNode, JsonNode updateNode) {
         final Iterator<String> fieldNames = updateNode.fieldNames();
 
@@ -75,6 +91,7 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
 
         final JsonNode mergedJsonNode = configs.stream()
                 .filter(s -> !Strings.isNullOrEmpty(s))
+                .map(configSubstitutor::substitute)
                 .map(s -> wrapChecked(() -> objectMapper.readValue(s, JsonNode.class)))
                 .reduce(YamlConfigContext::mergeJsonNodes)
                 .orElse(objectMapper.createObjectNode());
