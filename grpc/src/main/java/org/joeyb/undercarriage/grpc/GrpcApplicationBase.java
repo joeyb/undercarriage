@@ -22,6 +22,11 @@ import io.grpc.ServerServiceDefinition;
 
 import java.util.List;
 
+/**
+ * {@code GrpcApplicationBase} provides a base default implementation for the {@link GrpcApplication} interface.
+ *
+ * @param <ConfigT> the app's config type
+ */
 public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
         extends ApplicationBase<ConfigT>
         implements GrpcApplication<ConfigT> {
@@ -41,6 +46,10 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
         super(configContext);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int port() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before we know its port.");
@@ -49,6 +58,10 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
         return server.getPort();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Server server() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before its server is available.");
@@ -57,16 +70,25 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
         return server;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<ServerServiceDefinition> serverServiceDefinitions() {
         return serverServiceDefinitions.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<ServerServiceDefinition> serverServiceDefinitionsWithInterceptors() {
         return serverServiceDefinitionsWithInterceptors.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<ServerInterceptor> serverInterceptors() {
         return serverInterceptors.get();
@@ -100,10 +122,21 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
         server.shutdownNow();
     }
 
+    /**
+     * Returns the {@link ServerServiceDefinition}s provided by the application itself. Similar to
+     * {@link ApplicationBase#enabledPlugins()}, implementors should also call
+     * {@code super.enabledServerServiceDefinitions()} and merge its result with theirs in order to support default
+     * service definitions.
+     */
     protected Iterable<ServerServiceDefinition> enabledServerServiceDefinitions() {
         return ImmutableList.of();
     }
 
+    /**
+     * Returns the {@link ServerInterceptor}s provided by the application itself. Similar to
+     * {@link ApplicationBase#enabledPlugins()}, implementors should also call {@code super.enabledServerInterceptors()}
+     * and merge its result with theirs in order to support default service interceptors.
+     */
     protected Iterable<ServerInterceptor> enabledServerInterceptors() {
         return ImmutableList.of();
     }
