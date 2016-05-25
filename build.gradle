@@ -1,4 +1,6 @@
 plugins {
+    id 'com.google.protobuf' version '0.7.7'
+    id 'java'
     id 'nebula.project' version '3.1.0'
     id 'nebula.provided-base' version '3.0.3'
 }
