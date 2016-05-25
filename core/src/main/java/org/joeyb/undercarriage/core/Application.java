@@ -45,7 +45,6 @@ public interface Application<ConfigT extends ConfigSection> {
      * @param pluginClass the requested plugin type
      * @param <PluginT> the requested plugin type
      * @throws InvalidParameterException if the requested plugin type is not enabled
-     * @return the request plugin instance
      */
     <PluginT extends Plugin<? super ConfigT>> PluginT plugin(Class<PluginT> pluginClass);
 
@@ -53,6 +52,14 @@ public interface Application<ConfigT extends ConfigSection> {
      * Returns all enabled plugins.
      */
     Iterable<Plugin<? super ConfigT>> plugins();
+
+    /**
+     * Returns all enabled plugins with the given type.
+     *
+     * @param pluginClass the requested plugin type
+     * @param <PluginT> the requested plugin type
+     */
+    <PluginT extends Plugin<? super ConfigT>> Iterable<PluginT> plugins(Class<PluginT> pluginClass);
 
     /**
      * Starts the application. An application can only be started once. By default, {@code start()} automatically calls

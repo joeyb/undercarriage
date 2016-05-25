@@ -6,6 +6,7 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.plugins.MockPlugin;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.core.plugins.PluginSorter;
+import org.joeyb.undercarriage.core.utils.GenericClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -220,7 +221,6 @@ public class ApplicationBaseTests {
         Iterable<Plugin<? super ConfigSection>> plugins = application.plugins();
 
         assertThat(plugins)
-                .isNotNull()
                 .contains(plugin);
     }
 
@@ -262,11 +262,71 @@ public class ApplicationBaseTests {
         Iterable<Plugin<? super ConfigSection>> plugins2 = application.plugins();
 
         assertThat(plugins1)
-                .isNotNull()
                 .contains(plugin);
         assertThat(plugins2)
-                .isNotNull()
                 .contains(plugin);
+    }
+
+    @Test
+    public void pluginsOfTypeIncludesTheExpectedPluginsIfTheyAreEnabled() {
+        MockPlugin plugin1 = new MockPlugin();
+        MockPlugin2 plugin2 = new MockPlugin2();
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected Iterable<Plugin<? super ConfigSection>> enabledPlugins() {
+                return ImmutableList.of(plugin1, plugin2);
+            }
+        };
+
+        Iterable<MockPlugin> plugins = application.plugins(MockPlugin.class);
+
+        assertThat(plugins)
+                .containsExactlyInAnyOrder(plugin1);
+    }
+
+    @Test
+    public void pluginsOfTypeIncludesTheExpectedPluginsOfGivenSupertypeIfTheyAreEnabled() {
+        MockPlugin plugin1 = new MockPlugin();
+        MockPlugin2 plugin2 = new MockPlugin2();
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected Iterable<Plugin<? super ConfigSection>> enabledPlugins() {
+                return ImmutableList.of(plugin1, plugin2);
+            }
+        };
+
+        Iterable<Plugin<ConfigSection>> plugins = application.plugins(
+                new GenericClass<Plugin<ConfigSection>>() { }.getGenericClass());
+
+        assertThat(plugins)
+                .containsExactlyInAnyOrder(plugin1, plugin2);
+    }
+
+    @Test
+    public void pluginsOfTypeExcludesTheExpectedPluginsIfTheyAreDisabled() {
+        MockPlugin plugin1 = new MockPlugin();
+        MockPlugin2 plugin2 = new MockPlugin2();
+
+        MockApplication application = new MockApplication(configContext) {
+
+            @Override
+            protected Iterable<Class<?>> disabledPlugins() {
+                return ImmutableList.of(MockPlugin.class);
+            }
+
+            @Override
+            protected Iterable<Plugin<? super ConfigSection>> enabledPlugins() {
+                return ImmutableList.of(plugin1, plugin2);
+            }
+        };
+
+        Iterable<MockPlugin> plugins = application.plugins(MockPlugin.class);
+
+        assertThat(plugins)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
@@ -413,6 +473,14 @@ public class ApplicationBaseTests {
 
         MockApplication(ConfigContext<ConfigSection> configContext) {
             super(configContext);
+        }
+    }
+
+    private static class MockPlugin2 implements Plugin<ConfigSection> {
+
+        @Override
+        public ConfigContext<ConfigSection> configContext() {
+            return null;
         }
     }
 }
