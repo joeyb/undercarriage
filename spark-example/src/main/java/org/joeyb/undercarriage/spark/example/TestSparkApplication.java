@@ -30,8 +30,8 @@ public class TestSparkApplication extends SparkApplicationBase<TestSparkConfig> 
     }
 
     @Override
-    public void start() {
-        super.start();
+    protected void onStart() {
+        super.onStart();
 
         service().get("/ping", (req, res) -> "pong");
     }

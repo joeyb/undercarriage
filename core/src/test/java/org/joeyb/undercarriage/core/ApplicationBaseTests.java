@@ -58,6 +58,22 @@ public class ApplicationBaseTests {
     }
 
     @Test
+    public void configureCallsOnConfigure() throws InterruptedException {
+        CountDownLatch onConfigureLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onConfigure() {
+                onConfigureLatch.countDown();
+            }
+        };
+
+        application.configure();
+
+        onConfigureLatch.await();
+    }
+
+    @Test
     public void configureConfiguresPlugins() {
         MockPlugin plugin = mock(MockPlugin.class);
 
@@ -331,20 +347,34 @@ public class ApplicationBaseTests {
 
     @Test
     public void startCallsConfigure() throws InterruptedException {
-        CountDownLatch configureLatch = new CountDownLatch(1);
+        CountDownLatch onConfigureLatch = new CountDownLatch(1);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
-            public void configure() {
-                super.configure();
-
-                configureLatch.countDown();
+            protected void onConfigure() {
+                onConfigureLatch.countDown();
             }
         };
 
         application.start();
 
-        configureLatch.await();
+        onConfigureLatch.await();
+    }
+
+    @Test
+    public void startCallsOnStart() throws InterruptedException {
+        CountDownLatch onStartLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onStart() {
+                onStartLatch.countDown();
+            }
+        };
+
+        application.start();
+
+        onStartLatch.await();
     }
 
     @Test
@@ -400,6 +430,23 @@ public class ApplicationBaseTests {
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(application::start);
+    }
+
+    @Test
+    public void stopCallsOnStop() throws InterruptedException {
+        CountDownLatch onStopLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onStop() {
+                onStopLatch.countDown();
+            }
+        };
+
+        application.start();
+        application.stop();
+
+        onStopLatch.await();
     }
 
     @Test
