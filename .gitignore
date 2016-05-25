@@ -16,6 +16,7 @@ build/
 .idea/
 out/
 generated/
+generated_protos/
 generated_tests/
 
 # OSX
