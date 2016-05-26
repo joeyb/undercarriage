@@ -1,3 +1,5 @@
+apply plugin: 'com.google.protobuf'
+
 dependencies {
     compile project(':grpc')
 }

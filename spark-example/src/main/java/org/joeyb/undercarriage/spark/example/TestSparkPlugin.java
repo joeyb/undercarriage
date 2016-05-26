@@ -14,7 +14,7 @@ public class TestSparkPlugin extends SparkPluginBase<TestSparkConfig> {
     }
 
     @Override
-    public void start() {
+    protected void onStart() {
         service().get("/plugin-ping", (req, res) -> "plugin-pong");
     }
 }

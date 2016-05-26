@@ -26,6 +26,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     private static final PluginSorter DEFAULT_PLUGIN_SORTER = new TopologicalPluginSorter();
 
     private final ConfigContext<ConfigT> configContext;
+    private final Object lock = new Object();
     private final Supplier<ImmutableList<Plugin<? super ConfigT>>> plugins =
             Suppliers.memoize(this::buildAndSortPlugins);
 
@@ -41,7 +42,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public ConfigContext<ConfigT> configContext() {
+    public final ConfigContext<ConfigT> configContext() {
         return configContext;
     }
 
@@ -49,12 +50,14 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public void configure() {
+    public final synchronized void configure() {
         if (isConfigured()) {
             throw new IllegalStateException("Applications can only be configured once.");
         }
 
         plugins().forEach(Plugin::configure);
+
+        onConfigure();
 
         isConfigured = true;
     }
@@ -63,7 +66,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean isConfigured() {
+    public final boolean isConfigured() {
         return isConfigured;
     }
 
@@ -71,7 +74,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean isStarted() {
+    public final boolean isStarted() {
         return isStarted;
     }
 
@@ -79,8 +82,33 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean isStopped() {
+    public final boolean isStopped() {
         return isStopped;
+    }
+
+    /**
+     * Called by {@link #configure()} and should be used by inheritors to perform configuration tasks. Overrides should
+     * be sure to call {@code super.onConfigure()} in order to support default configuration provided by the base
+     * classes.
+     */
+    protected void onConfigure() {
+
+    }
+
+    /**
+     * Called by {@link #start()} and should be used by inheritors to perform start tasks. Overrides should be sure to
+     * call {@code super.onStart()} in order to support default start tasks provided by the base classes.
+     */
+    protected void onStart() {
+
+    }
+
+    /**
+     * Called by {@link #stop()} and should be used by inheritors to perform stop tasks. Overrides should be sure to
+     * call {@code super.onStop()} in order to support default stop tasks provided by the base classes.
+     */
+    protected void onStop() {
+
     }
 
     /**
@@ -88,9 +116,9 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <PluginT extends Plugin<? super ConfigT>> PluginT plugin(Class<PluginT> pluginClass) {
+    public final <PluginT extends Plugin<? super ConfigT>> PluginT plugin(Class<PluginT> pluginClass) {
         Optional<Plugin<? super ConfigT>> plugin = Iterables.stream(plugins())
-                .filter(p -> p.getClass().equals(pluginClass))
+                .filter(p -> pluginClass.isAssignableFrom(p.getClass()))
                 .findFirst();
 
         // If the plugin was found then we can safely case it to PluginT since we confirmed the class in the filter.
@@ -103,7 +131,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Plugin<? super ConfigT>> plugins() {
+    public final Iterable<Plugin<? super ConfigT>> plugins() {
         return plugins.get();
     }
 
@@ -112,7 +140,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <PluginT extends Plugin<? super ConfigT>> Iterable<PluginT> plugins(Class<PluginT> pluginClass) {
+    public final <PluginT extends Plugin<? super ConfigT>> Iterable<PluginT> plugins(Class<PluginT> pluginClass) {
         return ImmutableList.copyOf(Iterables.stream(plugins())
                 .filter(p -> pluginClass.isAssignableFrom(p.getClass()))
                 .map(p -> (PluginT) p)
@@ -123,7 +151,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public void start() {
+    public final synchronized void start() {
         if (isStarted()) {
             throw new IllegalStateException("Applications can only be started once.");
         }
@@ -132,6 +160,8 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
 
         plugins().forEach(Plugin::start);
 
+        onStart();
+
         isStarted = true;
     }
 
@@ -139,7 +169,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public void stop() {
+    public final synchronized void stop() {
         if (isStopped()) {
             throw new IllegalStateException("Applications can only be stopped once.");
         }
@@ -149,6 +179,8 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
         }
 
         ImmutableList.copyOf(plugins()).reverse().forEach(Plugin::stop);
+
+        onStop();
 
         isStopped = true;
     }
@@ -201,7 +233,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
         final ImmutableList<Class<?>> disabledPlugins = ImmutableList.copyOf(disabledPlugins());
 
         return ImmutableList.copyOf(pluginSorter().sort(ImmutableList.copyOf(enabledPlugins()).stream()
-                .filter(p -> !disabledPlugins.contains(p.getClass()))
+                .filter(p -> !disabledPlugins.stream().anyMatch(dp -> dp.isAssignableFrom(p.getClass())))
                 .collect(Collectors.toList())));
     }
 }

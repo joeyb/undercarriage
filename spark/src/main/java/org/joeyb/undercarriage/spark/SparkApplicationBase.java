@@ -29,8 +29,8 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public void configure() {
-        super.configure();
+    protected void onConfigure() {
+        super.onConfigure();
 
         port = configContext().config().spark().port();
 
@@ -40,6 +40,16 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
         }
 
         service().port(port);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        service().init();
     }
 
     /**
@@ -60,15 +70,5 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
     @Override
     public Service service() {
         return service;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start() {
-        super.start();
-
-        service().init();
     }
 }

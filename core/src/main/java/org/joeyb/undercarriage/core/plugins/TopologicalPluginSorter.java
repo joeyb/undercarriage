@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,18 +87,20 @@ public class TopologicalPluginSorter implements PluginSorter {
         // For each plugin, create an edge for each of its dependencies (from the dependency to the plugin).
         for (final Plugin<? super T> p : plugins) {
             for (final Class<?> c : p.dependencies()) {
-                Plugin<? super T> dependencyPlugin = classMap.get(c);
+                Optional<Class<?>> dependencyKey = classMap.keySet().stream()
+                        .filter(c::isAssignableFrom)
+                        .findFirst();
 
                 // Make sure the dependency is actually enabled.
-                if (dependencyPlugin == null) {
+                if (!dependencyKey.isPresent()) {
                     throw new IllegalStateException(
                             String.format("Plugin %s depends on plugin %s, but %s is not enabled.",
-                                    p.getClass().getSimpleName(),
-                                    c.getSimpleName(),
-                                    c.getSimpleName()));
+                                          p.getClass().getSimpleName(),
+                                          c.getSimpleName(),
+                                          c.getSimpleName()));
                 }
 
-                graph.addEdge(dependencyPlugin, p);
+                graph.addEdge(classMap.get(dependencyKey.get()), p);
             }
         }
 

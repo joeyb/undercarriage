@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Answers.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
 
 public class TopologicalPluginSorterTests {
 
@@ -24,8 +26,8 @@ public class TopologicalPluginSorterTests {
     public void returnedOrderIsCorrectGivenParentChild() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        ParentPlugin parentPlugin = new ParentPlugin();
-        ChildPlugin childPlugin = new ChildPlugin();
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
+        ChildPlugin childPlugin = mock(ChildPlugin.class, CALLS_REAL_METHODS);
 
         Iterable<Plugin<? super ConfigSection>> sortedPlugins = pluginSorter.sort(
                 ImmutableList.of(parentPlugin, childPlugin));
@@ -39,8 +41,8 @@ public class TopologicalPluginSorterTests {
     public void returnedOrderIsCorrectGivenChildParent() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        ParentPlugin parentPlugin = new ParentPlugin();
-        ChildPlugin childPlugin = new ChildPlugin();
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
+        ChildPlugin childPlugin = mock(ChildPlugin.class, CALLS_REAL_METHODS);
 
         Iterable<Plugin<? super ConfigSection>> sortedPlugins = pluginSorter.sort(
                 ImmutableList.of(childPlugin, parentPlugin));
@@ -54,8 +56,8 @@ public class TopologicalPluginSorterTests {
     public void returnedOrderIsCorrectGivenHighParentNormalParent() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        HighPriorityParentPlugin highPriorityParentPlugin = new HighPriorityParentPlugin();
-        ParentPlugin parentPlugin = new ParentPlugin();
+        HighPriorityParentPlugin highPriorityParentPlugin = mock(HighPriorityParentPlugin.class, CALLS_REAL_METHODS);
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
 
         Iterable<Plugin<? super ConfigSection>> sortedPlugins = pluginSorter.sort(
                 ImmutableList.of(highPriorityParentPlugin, parentPlugin));
@@ -69,8 +71,8 @@ public class TopologicalPluginSorterTests {
     public void returnedOrderIsCorrectGivenNormalParentHighParent() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        HighPriorityParentPlugin highPriorityParentPlugin = new HighPriorityParentPlugin();
-        ParentPlugin parentPlugin = new ParentPlugin();
+        HighPriorityParentPlugin highPriorityParentPlugin = mock(HighPriorityParentPlugin.class, CALLS_REAL_METHODS);
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
 
         Iterable<Plugin<? super ConfigSection>> sortedPlugins = pluginSorter.sort(
                 ImmutableList.of(parentPlugin, highPriorityParentPlugin));
@@ -84,10 +86,11 @@ public class TopologicalPluginSorterTests {
     public void returnedOrderIsCorrectGivenComplexDependencyGraph() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        ParentPlugin parentPlugin = new ParentPlugin();
-        ChildPlugin childPlugin = new ChildPlugin();
-        GrandChildPlugin grandChildPlugin = new GrandChildPlugin();
-        HighPriorityGrandChildPlugin highPriorityGrandChildPlugin = new HighPriorityGrandChildPlugin();
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
+        ChildPlugin childPlugin = mock(ChildPlugin.class, CALLS_REAL_METHODS);
+        GrandChildPlugin grandChildPlugin = mock(GrandChildPlugin.class, CALLS_REAL_METHODS);
+        HighPriorityGrandChildPlugin highPriorityGrandChildPlugin =
+                mock(HighPriorityGrandChildPlugin.class, CALLS_REAL_METHODS);
 
         Iterable<Plugin<? super ConfigSection>> sortedPlugins = pluginSorter.sort(
                 ImmutableList.of(grandChildPlugin, highPriorityGrandChildPlugin, childPlugin, parentPlugin));
@@ -102,7 +105,7 @@ public class TopologicalPluginSorterTests {
     public void sortThrowsForMissingDependency() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        ChildPlugin childPlugin = new ChildPlugin();
+        ChildPlugin childPlugin = mock(ChildPlugin.class, CALLS_REAL_METHODS);
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> pluginSorter.sort(ImmutableList.of(childPlugin)));
@@ -112,19 +115,19 @@ public class TopologicalPluginSorterTests {
     public void sortThrowsForCycle() {
         TopologicalPluginSorter pluginSorter = new TopologicalPluginSorter();
 
-        ParentPlugin parentPlugin = new ParentPlugin();
-        CyclePlugin1 cyclePlugin1 = new CyclePlugin1();
-        CyclePlugin2 cyclePlugin2 = new CyclePlugin2();
+        ParentPlugin parentPlugin = mock(ParentPlugin.class, CALLS_REAL_METHODS);
+        CyclePlugin1 cyclePlugin1 = mock(CyclePlugin1.class, CALLS_REAL_METHODS);
+        CyclePlugin2 cyclePlugin2 = mock(CyclePlugin2.class, CALLS_REAL_METHODS);
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> pluginSorter.sort(ImmutableList.of(parentPlugin, cyclePlugin1, cyclePlugin2)));
     }
 
-    private static class ParentPlugin extends MockPlugin {
+    private static abstract class ParentPlugin implements MockPlugin {
 
     }
 
-    private static class ChildPlugin extends MockPlugin {
+    private static abstract class ChildPlugin implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -132,7 +135,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static class GrandChildPlugin extends MockPlugin {
+    private static abstract class GrandChildPlugin implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -140,7 +143,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static class HighPriorityGrandChildPlugin extends MockPlugin {
+    private static abstract class HighPriorityGrandChildPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {
@@ -153,7 +156,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static class CyclePlugin1 extends MockPlugin {
+    private static abstract class CyclePlugin1 implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -161,7 +164,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static class CyclePlugin2 extends MockPlugin {
+    private static abstract class CyclePlugin2 implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -169,7 +172,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static class HighPriorityParentPlugin extends MockPlugin {
+    private static abstract class HighPriorityParentPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {

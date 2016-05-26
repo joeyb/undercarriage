@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -58,8 +59,24 @@ public class ApplicationBaseTests {
     }
 
     @Test
+    public void configureCallsOnConfigure() throws InterruptedException {
+        CountDownLatch onConfigureLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onConfigure() {
+                onConfigureLatch.countDown();
+            }
+        };
+
+        application.configure();
+
+        onConfigureLatch.await();
+    }
+
+    @Test
     public void configureConfiguresPlugins() {
-        MockPlugin plugin = mock(MockPlugin.class);
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -75,8 +92,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void configureConfiguresPluginsInSortedOrder() {
-        MockPlugin plugin1 = mock(MockPlugin.class);
-        MockPlugin plugin2 = mock(MockPlugin.class);
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin plugin2 = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         PluginSorter pluginSorter = mock(PluginSorter.class);
 
@@ -138,7 +155,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginReturnsTheExpectedInstanceIfItIsEnabled() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -155,7 +172,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginThrowsIfTheGivenPluginIsDisabled() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -183,7 +200,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsSortsUsingThePluginSorter() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
         PluginSorter pluginSorter = mock(PluginSorter.class);
 
         Iterable<Plugin<? super ConfigSection>> plugins = ImmutableList.of(plugin);
@@ -209,7 +226,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsIncludesTheExpectedPluginIfItIsEnabled() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -226,7 +243,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsExcludesTheExpectedPluginIfItIsDisabled() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -249,7 +266,7 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsReturnsTheSameInstancesOnSubsequentCalls() {
-        MockPlugin plugin = new MockPlugin();
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -269,8 +286,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsOfTypeIncludesTheExpectedPluginsIfTheyAreEnabled() {
-        MockPlugin plugin1 = new MockPlugin();
-        MockPlugin2 plugin2 = new MockPlugin2();
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin2 plugin2 = mock(MockPlugin2.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -287,8 +304,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsOfTypeIncludesTheExpectedPluginsOfGivenSupertypeIfTheyAreEnabled() {
-        MockPlugin plugin1 = new MockPlugin();
-        MockPlugin2 plugin2 = new MockPlugin2();
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin2 plugin2 = mock(MockPlugin2.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -306,8 +323,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void pluginsOfTypeExcludesTheExpectedPluginsIfTheyAreDisabled() {
-        MockPlugin plugin1 = new MockPlugin();
-        MockPlugin2 plugin2 = new MockPlugin2();
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin2 plugin2 = mock(MockPlugin2.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
 
@@ -331,25 +348,39 @@ public class ApplicationBaseTests {
 
     @Test
     public void startCallsConfigure() throws InterruptedException {
-        CountDownLatch configureLatch = new CountDownLatch(1);
+        CountDownLatch onConfigureLatch = new CountDownLatch(1);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
-            public void configure() {
-                super.configure();
-
-                configureLatch.countDown();
+            protected void onConfigure() {
+                onConfigureLatch.countDown();
             }
         };
 
         application.start();
 
-        configureLatch.await();
+        onConfigureLatch.await();
+    }
+
+    @Test
+    public void startCallsOnStart() throws InterruptedException {
+        CountDownLatch onStartLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onStart() {
+                onStartLatch.countDown();
+            }
+        };
+
+        application.start();
+
+        onStartLatch.await();
     }
 
     @Test
     public void startStartsPlugins() {
-        MockPlugin plugin = mock(MockPlugin.class);
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -365,8 +396,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void startStartsPluginsInSortedOrder() {
-        MockPlugin plugin1 = mock(MockPlugin.class);
-        MockPlugin plugin2 = mock(MockPlugin.class);
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin plugin2 = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         PluginSorter pluginSorter = mock(PluginSorter.class);
 
@@ -403,8 +434,25 @@ public class ApplicationBaseTests {
     }
 
     @Test
+    public void stopCallsOnStop() throws InterruptedException {
+        CountDownLatch onStopLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onStop() {
+                onStopLatch.countDown();
+            }
+        };
+
+        application.start();
+        application.stop();
+
+        onStopLatch.await();
+    }
+
+    @Test
     public void stopStopsPlugins() {
-        MockPlugin plugin = mock(MockPlugin.class);
+        MockPlugin plugin = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         MockApplication application = new MockApplication(configContext) {
             @Override
@@ -421,8 +469,8 @@ public class ApplicationBaseTests {
 
     @Test
     public void stopStopsPluginsInReverseSortedOrder() {
-        MockPlugin plugin1 = mock(MockPlugin.class);
-        MockPlugin plugin2 = mock(MockPlugin.class);
+        MockPlugin plugin1 = mock(MockPlugin.class, CALLS_REAL_METHODS);
+        MockPlugin plugin2 = mock(MockPlugin.class, CALLS_REAL_METHODS);
 
         PluginSorter pluginSorter = mock(PluginSorter.class);
 
@@ -476,11 +524,7 @@ public class ApplicationBaseTests {
         }
     }
 
-    private static class MockPlugin2 implements Plugin<ConfigSection> {
+    private interface MockPlugin2 extends Plugin<ConfigSection> {
 
-        @Override
-        public ConfigContext<ConfigSection> configContext() {
-            return null;
-        }
     }
 }
