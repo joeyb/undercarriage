@@ -87,26 +87,25 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     }
 
     /**
-     * Called by {@link ApplicationBase#configure()} and should be used by inheritors to perform configuration tasks.
-     * Overrides should be sure to call {@code super.onConfigure()} in order to support default configuration provided by
-     * the base classes.
+     * Called by {@link #configure()} and should be used by inheritors to perform configuration tasks. Overrides should
+     * be sure to call {@code super.onConfigure()} in order to support default configuration provided by the base
+     * classes.
      */
     protected void onConfigure() {
 
     }
 
     /**
-     * Called by {@link ApplicationBase#start()} and should be used by inheritors to perform start tasks. Overrides
-     * should be sure to call {@code super.onStart()} in order to support default start tasks provided by the base
-     * classes.
+     * Called by {@link #start()} and should be used by inheritors to perform start tasks. Overrides should be sure to
+     * call {@code super.onStart()} in order to support default start tasks provided by the base classes.
      */
     protected void onStart() {
 
     }
 
     /**
-     * Called by {@link ApplicationBase#stop()} and should be used by inheritors to perform stop tasks. Overrides should
-     * be sure to call {@code super.onStop()} in order to support default stop tasks provided by the base classes.
+     * Called by {@link #stop()} and should be used by inheritors to perform stop tasks. Overrides should be sure to
+     * call {@code super.onStop()} in order to support default stop tasks provided by the base classes.
      */
     protected void onStop() {
 
@@ -119,7 +118,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     @SuppressWarnings("unchecked")
     public final <PluginT extends Plugin<? super ConfigT>> PluginT plugin(Class<PluginT> pluginClass) {
         Optional<Plugin<? super ConfigT>> plugin = Iterables.stream(plugins())
-                .filter(p -> p.getClass().equals(pluginClass))
+                .filter(p -> pluginClass.isAssignableFrom(p.getClass()))
                 .findFirst();
 
         // If the plugin was found then we can safely case it to PluginT since we confirmed the class in the filter.
@@ -234,7 +233,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
         final ImmutableList<Class<?>> disabledPlugins = ImmutableList.copyOf(disabledPlugins());
 
         return ImmutableList.copyOf(pluginSorter().sort(ImmutableList.copyOf(enabledPlugins()).stream()
-                .filter(p -> !disabledPlugins.contains(p.getClass()))
+                .filter(p -> !disabledPlugins.stream().anyMatch(dp -> dp.isAssignableFrom(p.getClass())))
                 .collect(Collectors.toList())));
     }
 }

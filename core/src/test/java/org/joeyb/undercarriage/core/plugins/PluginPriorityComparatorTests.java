@@ -3,6 +3,8 @@ package org.joeyb.undercarriage.core.plugins;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Answers.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
 
 public class PluginPriorityComparatorTests {
 
@@ -10,7 +12,9 @@ public class PluginPriorityComparatorTests {
     public void compareReturnsNegativeWhenLeftOperandIsHigherPriority() {
         PluginPriorityComparator comparator = new PluginPriorityComparator();
 
-        int result = comparator.compare(new HighPriorityPlugin(), new LowPriorityPlugin());
+        int result = comparator.compare(
+                mock(HighPriorityPlugin.class, CALLS_REAL_METHODS),
+                mock(LowPriorityPlugin.class, CALLS_REAL_METHODS));
 
         assertThat(result).isLessThan(0);
     }
@@ -19,7 +23,9 @@ public class PluginPriorityComparatorTests {
     public void compareReturnsPositiveWhenLeftOperandIsLowerPriority() {
         PluginPriorityComparator comparator = new PluginPriorityComparator();
 
-        int result = comparator.compare(new LowPriorityPlugin(), new HighPriorityPlugin());
+        int result = comparator.compare(
+                mock(LowPriorityPlugin.class, CALLS_REAL_METHODS),
+                mock(HighPriorityPlugin.class, CALLS_REAL_METHODS));
 
         assertThat(result).isGreaterThan(0);
     }
@@ -28,12 +34,14 @@ public class PluginPriorityComparatorTests {
     public void compareReturnsNonZeroForDifferentClassesWithSamePriority() {
         PluginPriorityComparator comparator = new PluginPriorityComparator();
 
-        int result = comparator.compare(new HighPriorityPlugin(), new HighPriorityPlugin2());
+        int result = comparator.compare(
+                mock(HighPriorityPlugin.class, CALLS_REAL_METHODS),
+                mock(HighPriorityPlugin2.class, CALLS_REAL_METHODS));
 
         assertThat(result).isNotEqualTo(0);
     }
 
-    private static class HighPriorityPlugin extends MockPlugin {
+    private static abstract class HighPriorityPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {
@@ -41,11 +49,11 @@ public class PluginPriorityComparatorTests {
         }
     }
 
-    private static class HighPriorityPlugin2 extends HighPriorityPlugin {
+    private static abstract class HighPriorityPlugin2 extends HighPriorityPlugin {
 
     }
 
-    private static class LowPriorityPlugin extends MockPlugin {
+    private static abstract class LowPriorityPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {

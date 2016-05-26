@@ -21,9 +21,7 @@ public interface Plugin<ConfigT extends ConfigSection> {
      * Performs any pre-start configuration. A plugin can only be configured once. By default the plugins are configured
      * during the application's {@link Application#configure()} phase.
      */
-    default void configure() {
-
-    }
+    void configure();
 
     /**
      * Returns the {@link Class} for each of this plugin's dependencies. This is used to build the dependency graph so
@@ -32,6 +30,21 @@ public interface Plugin<ConfigT extends ConfigSection> {
     default Iterable<Class<? extends Plugin<?>>> dependencies() {
         return ImmutableList.of();
     }
+
+    /**
+     * Returns whether or not {@link #configure()} has been executed for the plugin.
+     */
+    boolean isConfigured();
+
+    /**
+     * Returns whether or not {@link #start()} has been executed for the plugin.
+     */
+    boolean isStarted();
+
+    /**
+     * Returns whether or not {@link #stop()} has been executed for the plugin.
+     */
+    boolean isStopped();
 
     /**
      * Returns the plugin's {@link PluginPriority}. The priority is used to specify plugin execution order.
@@ -44,15 +57,11 @@ public interface Plugin<ConfigT extends ConfigSection> {
      * Starts the plugin. A plugin can only be started once. By default the plugins are started during the application's
      * {@link Application#start()} phase.
      */
-    default void start() {
-
-    }
+    void start();
 
     /**
      * Stops the plugin. A plugin can only be stopped once and it must have already been started before it can be
      * stopped. By default the plugins are stopped during the application's {@link Application#stop()} phase.
      */
-    default void stop() {
-
-    }
+    void stop();
 }
