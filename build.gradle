@@ -17,9 +17,11 @@ subprojects {
         mavenCentral()
     }
 
+    apply plugin: 'java'
+
     apply plugin: 'checkstyle'
     apply plugin: 'idea'
-    apply plugin: 'java'
+    apply plugin: 'jacoco'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.provided-base'
 
@@ -50,8 +52,8 @@ subprojects {
 
     idea {
         module {
-            def generatedMainDir = file("src/main/generated")
-            def generatedTestDir = file("src/test/generated_tests")
+            def generatedMainDir = file('src/main/generated')
+            def generatedTestDir = file('src/test/generated_tests')
 
             sourceDirs += generatedMainDir
             testSourceDirs += generatedTestDir
@@ -60,4 +62,17 @@ subprojects {
             generatedSourceDirs += generatedTestDir
         }
     }
+
+    jacoco {
+        toolVersion = '0.7.6.201602180812'
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    check.dependsOn jacocoTestReport
 }
