@@ -2,11 +2,11 @@ package org.joeyb.undercarriage.grpc.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joeyb.undercarriage.grpc.example.dagger.DaggerHelloWorldGrpcApplicationComponent;
-import org.junit.Test;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
+import org.joeyb.undercarriage.grpc.example.dagger.DaggerHelloWorldGrpcApplicationComponent;
+import org.junit.Test;
 
 import java.util.UUID;
 

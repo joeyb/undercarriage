@@ -1,10 +1,10 @@
 package org.joeyb.undercarriage.core.plugins;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Answers.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+
+import org.junit.Test;
 
 public class PluginPriorityComparatorTests {
 
@@ -41,7 +41,7 @@ public class PluginPriorityComparatorTests {
         assertThat(result).isNotEqualTo(0);
     }
 
-    private static abstract class HighPriorityPlugin implements MockPlugin {
+    private abstract static class HighPriorityPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {
@@ -49,11 +49,11 @@ public class PluginPriorityComparatorTests {
         }
     }
 
-    private static abstract class HighPriorityPlugin2 extends HighPriorityPlugin {
+    private abstract static class HighPriorityPlugin2 extends HighPriorityPlugin {
 
     }
 
-    private static abstract class LowPriorityPlugin implements MockPlugin {
+    private abstract static class LowPriorityPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {

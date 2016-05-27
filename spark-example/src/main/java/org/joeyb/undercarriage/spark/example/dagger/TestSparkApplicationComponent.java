@@ -1,6 +1,7 @@
 package org.joeyb.undercarriage.spark.example.dagger;
 
 import dagger.Component;
+
 import org.joeyb.undercarriage.spark.dagger.SparkModule;
 import org.joeyb.undercarriage.spark.example.TestSparkApplication;
 

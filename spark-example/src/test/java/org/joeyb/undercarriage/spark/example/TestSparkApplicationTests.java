@@ -1,10 +1,10 @@
 package org.joeyb.undercarriage.spark.example;
 
-import org.joeyb.undercarriage.spark.example.dagger.DaggerTestSparkApplicationComponent;
-import org.junit.Test;
-
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
+
+import org.joeyb.undercarriage.spark.example.dagger.DaggerTestSparkApplicationComponent;
+import org.junit.Test;
 
 public class TestSparkApplicationTests {
 

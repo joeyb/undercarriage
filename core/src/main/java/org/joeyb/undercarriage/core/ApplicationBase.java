@@ -1,8 +1,11 @@
 package org.joeyb.undercarriage.core;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.plugins.Plugin;
@@ -13,8 +16,6 @@ import org.joeyb.undercarriage.core.utils.Iterables;
 import java.security.InvalidParameterException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@code ApplicationBase} provides a base default implementation for the {@link Application} interface.

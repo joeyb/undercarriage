@@ -3,10 +3,10 @@ package org.joeyb.undercarriage.grpc.example;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import io.grpc.ServerServiceDefinition;
+
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.grpc.GrpcApplicationBase;
-
-import io.grpc.ServerServiceDefinition;
 
 import javax.inject.Inject;
 

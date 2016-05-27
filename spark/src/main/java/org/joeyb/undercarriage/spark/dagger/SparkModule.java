@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.spark.dagger;
 
 import dagger.Module;
 import dagger.Provides;
+
 import spark.Service;
 
 import javax.inject.Singleton;

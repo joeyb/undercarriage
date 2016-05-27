@@ -11,9 +11,9 @@ import javax.inject.Inject;
  * {@code DefaultConfigSubstitutor} is an implementation of {@link ConfigSubstitutor} that uses the given
  * {@link ConfigVariableValueProvider} instances to replace variable placeholders in configs.
  *
- * A variable should be prefixed with {@code $&#123;} and suffixed with {@code &#125;}. Also, each provider defines its
- * variable name prefix. For example, if the provider prefix is {@code provider.} and the variable name is {@code key},
- * then the full placeholder would be {@code $&#123;provider.key&#125;}.
+ * <p>A variable should be prefixed with {@code $&#123;} and suffixed with {@code &#125;}. Also, each provider defines
+ * its variable name prefix. For example, if the provider prefix is {@code provider.} and the variable name is
+ * {@code key}, then the full placeholder would be {@code $&#123;provider.key&#125;}.
  */
 public class DefaultConfigSubstitutor implements ConfigSubstitutor {
 

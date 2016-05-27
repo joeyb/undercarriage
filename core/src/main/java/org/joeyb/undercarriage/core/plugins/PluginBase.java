@@ -1,9 +1,9 @@
 package org.joeyb.undercarriage.core.plugins;
 
+import static java.util.Objects.requireNonNull;
+
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@code PluginBase} provides a base default implementation for {@link Plugin}.

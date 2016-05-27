@@ -1,6 +1,7 @@
 package org.joeyb.undercarriage.core.plugins;
 
 import com.google.common.collect.ImmutableList;
+
 import org.joeyb.undercarriage.core.Application;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
@@ -8,7 +9,7 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
 /**
  * {@code Plugin} is the base interface for all application plugins. It defines the core lifecycle phases.
  *
- * @param <ConfigT>
+ * @param <ConfigT> the app's config type
  */
 public interface Plugin<ConfigT extends ConfigSection> {
 

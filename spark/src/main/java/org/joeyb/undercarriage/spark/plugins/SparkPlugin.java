@@ -3,6 +3,7 @@ package org.joeyb.undercarriage.spark.plugins;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.spark.SparkApplication;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
+
 import spark.Service;
 
 /**

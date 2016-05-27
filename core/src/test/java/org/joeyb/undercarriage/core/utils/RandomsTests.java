@@ -1,9 +1,9 @@
 package org.joeyb.undercarriage.core.utils;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import org.junit.Test;
 
 public class RandomsTests {
 

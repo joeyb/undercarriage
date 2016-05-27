@@ -17,6 +17,7 @@ subprojects {
         mavenCentral()
     }
 
+    apply plugin: 'checkstyle'
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'nebula.project'
@@ -40,6 +41,11 @@ subprojects {
         testCompile "junit:junit:$junitVersion"
         testCompile "org.assertj:assertj-core:$assertjVersion"
         testCompile "org.mockito:mockito-core:$mockitoVersion"
+    }
+
+    checkstyle {
+        configFile = file("$rootDir/gradle/checkstyle/checkstyle.xml")
+        toolVersion = '6.18'
     }
 
     idea {

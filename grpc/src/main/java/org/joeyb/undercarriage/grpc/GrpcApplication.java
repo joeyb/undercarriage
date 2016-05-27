@@ -1,11 +1,11 @@
 package org.joeyb.undercarriage.grpc;
 
-import org.joeyb.undercarriage.core.Application;
-import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
-
 import io.grpc.Server;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
+
+import org.joeyb.undercarriage.core.Application;
+import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
 
 /**
  * {@code GrpcApplication} is the base interface for all gRPC-based applications. It defines the gRPC-specific

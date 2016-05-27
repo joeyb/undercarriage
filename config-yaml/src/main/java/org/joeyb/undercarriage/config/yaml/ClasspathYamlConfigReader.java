@@ -1,10 +1,11 @@
 package org.joeyb.undercarriage.config.yaml;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
+import javax.inject.Inject;
 
 /**
  * {@code ClasspathYamlConfigReader} is an implementation of {@link YamlConfigReader} that reads the config files from
