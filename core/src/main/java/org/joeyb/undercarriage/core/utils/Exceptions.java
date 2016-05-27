@@ -11,13 +11,13 @@ public class Exceptions {
      * Wraps a function that potentially throws a checked exception, catches the exception if it occurs, and re-throws
      * it wrapped in a {@link RuntimeException}.
      *
-     * @param f the function that potentially throws a checked exception
+     * @param function the function that potentially throws a checked exception
      * @param <T> the return type of the given function
      * @return the return value of the given function
      */
-    public static <T> T wrapChecked(Callable<T> f) {
+    public static <T> T wrapChecked(Callable<T> function) {
         try {
-            return f.call();
+            return function.call();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

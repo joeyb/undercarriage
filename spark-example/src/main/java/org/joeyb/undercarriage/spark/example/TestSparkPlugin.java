@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.spark.example;
 
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.spark.plugins.SparkPluginBase;
+
 import spark.Service;
 
 import javax.inject.Inject;

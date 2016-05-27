@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.spark;
 
 import org.joeyb.undercarriage.core.Application;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
+
 import spark.Service;
 
 /**

@@ -1,13 +1,14 @@
 package org.joeyb.undercarriage.core.plugins;
 
-import com.google.common.collect.ImmutableList;
-import org.joeyb.undercarriage.core.config.ConfigSection;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Answers.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+
+import com.google.common.collect.ImmutableList;
+
+import org.joeyb.undercarriage.core.config.ConfigSection;
+import org.junit.Test;
 
 public class TopologicalPluginSorterTests {
 
@@ -123,11 +124,11 @@ public class TopologicalPluginSorterTests {
                 .isThrownBy(() -> pluginSorter.sort(ImmutableList.of(parentPlugin, cyclePlugin1, cyclePlugin2)));
     }
 
-    private static abstract class ParentPlugin implements MockPlugin {
+    private abstract static class ParentPlugin implements MockPlugin {
 
     }
 
-    private static abstract class ChildPlugin implements MockPlugin {
+    private abstract static class ChildPlugin implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -135,7 +136,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static abstract class GrandChildPlugin implements MockPlugin {
+    private abstract static class GrandChildPlugin implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -143,7 +144,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static abstract class HighPriorityGrandChildPlugin implements MockPlugin {
+    private abstract static class HighPriorityGrandChildPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {
@@ -156,7 +157,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static abstract class CyclePlugin1 implements MockPlugin {
+    private abstract static class CyclePlugin1 implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -164,7 +165,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static abstract class CyclePlugin2 implements MockPlugin {
+    private abstract static class CyclePlugin2 implements MockPlugin {
 
         @Override
         public Iterable<Class<? extends Plugin<?>>> dependencies() {
@@ -172,7 +173,7 @@ public class TopologicalPluginSorterTests {
         }
     }
 
-    private static abstract class HighPriorityParentPlugin implements MockPlugin {
+    private abstract static class HighPriorityParentPlugin implements MockPlugin {
 
         @Override
         public PluginPriority priority() {

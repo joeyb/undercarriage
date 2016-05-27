@@ -7,18 +7,18 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerInterceptors;
+import io.grpc.ServerServiceDefinition;
+
 import org.joeyb.undercarriage.core.ApplicationBase;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.utils.GenericClass;
 import org.joeyb.undercarriage.core.utils.Iterables;
 import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
 import org.joeyb.undercarriage.grpc.plugins.GrpcPlugin;
-
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerInterceptor;
-import io.grpc.ServerInterceptors;
-import io.grpc.ServerServiceDefinition;
 
 import java.util.List;
 

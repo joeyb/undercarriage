@@ -8,6 +8,11 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerServiceDefinition;
+
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.core.utils.Randoms;
@@ -25,11 +30,6 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerInterceptor;
-import io.grpc.ServerServiceDefinition;
 
 import java.io.IOException;
 import java.util.Collection;

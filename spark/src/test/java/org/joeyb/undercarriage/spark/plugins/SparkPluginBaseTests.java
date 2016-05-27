@@ -1,5 +1,7 @@
 package org.joeyb.undercarriage.spark.plugins;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.joeyb.undercarriage.spark.SparkConfigContext;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
 import org.junit.Rule;
@@ -11,9 +13,8 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import spark.Service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import spark.Service;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Service.class)

@@ -1,13 +1,14 @@
 package org.joeyb.undercarriage.config.yaml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import com.google.common.collect.ImmutableList;
+
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ClasspathYamlConfigReaderTests {
 

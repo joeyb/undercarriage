@@ -2,13 +2,13 @@ package org.joeyb.undercarriage.grpc.plugins;
 
 import com.google.common.collect.ImmutableList;
 
-import org.joeyb.undercarriage.core.plugins.Plugin;
-import org.joeyb.undercarriage.grpc.GrpcApplication;
-import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
-
 import io.grpc.Server;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
+
+import org.joeyb.undercarriage.core.plugins.Plugin;
+import org.joeyb.undercarriage.grpc.GrpcApplication;
+import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
 
 /**
  * {@code GrpcPlugin} is the base interface for all {@link GrpcApplication} plugins.

@@ -1,5 +1,7 @@
 package org.joeyb.undercarriage.config.yaml;
 
+import static org.joeyb.undercarriage.core.utils.Exceptions.wrapChecked;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,16 +12,15 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+
+import net.jodah.typetools.TypeResolver;
+
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.config.substitutors.ConfigSubstitutor;
 
 import java.util.Collection;
 import java.util.Iterator;
-
-import static org.joeyb.undercarriage.core.utils.Exceptions.wrapChecked;
-
-import net.jodah.typetools.TypeResolver;
 
 /**
  * {@code YamlConfigContext} is a {@link ConfigContext} implementation that reads the config from YAML files. Due to
