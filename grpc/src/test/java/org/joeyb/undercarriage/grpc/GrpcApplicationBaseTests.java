@@ -44,7 +44,7 @@ public class GrpcApplicationBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    public GrpcConfigContext configContext;
+    public MockGrpcConfigContext configContext;
 
     @Mock
     public ServerBuilder<?> serverBuilder;
@@ -276,5 +276,9 @@ public class GrpcApplicationBaseTests {
 
             return serverBuilder;
         }
+    }
+
+    private interface MockGrpcConfigContext extends ConfigContext<GrpcConfigSection> {
+
     }
 }

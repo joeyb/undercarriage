@@ -1,7 +1,5 @@
 package org.joeyb.undercarriage.grpc.plugins;
 
-import com.google.common.collect.ImmutableList;
-
 import io.grpc.Server;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
@@ -21,16 +19,12 @@ public interface GrpcPlugin<ConfigT extends GrpcConfigSection> extends Plugin<Co
      * Returns the {@link ServerServiceDefinition}s that are provided by this plugin. The {@link GrpcApplication} adds
      * them to the {@link Server} during the application start phase.
      */
-    default Iterable<ServerServiceDefinition> serverServiceDefinitions() {
-        return ImmutableList.of();
-    }
+    Iterable<ServerServiceDefinition> serverServiceDefinitions();
 
     /**
      * Returns the {@link ServerInterceptor}s that are provided by this plugin. The {@link GrpcApplication} applies them
      * to all {@link ServerServiceDefinition}s (aggregated from the app and all its plugins) during the application
      * start phase.
      */
-    default Iterable<ServerInterceptor> serverInterceptors() {
-        return ImmutableList.of();
-    }
+    Iterable<ServerInterceptor> serverInterceptors();
 }

@@ -30,7 +30,7 @@ public class SparkApplicationBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    public SparkConfigContext configContext;
+    public MockSparkConfigContext configContext;
 
     @Test
     public void portThrowsIfNotStarted() {
@@ -90,5 +90,9 @@ public class SparkApplicationBaseTests {
         MockSparkApplication(ConfigContext<SparkConfigSection> configContext, Service service) {
             super(configContext, service);
         }
+    }
+
+    private interface MockSparkConfigContext extends ConfigContext<SparkConfigSection> {
+
     }
 }
