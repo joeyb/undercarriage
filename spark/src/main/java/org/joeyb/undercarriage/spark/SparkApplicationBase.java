@@ -71,5 +71,6 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
         super.onStart();
 
         service().init();
+        service().awaitInitialization();
     }
 }
