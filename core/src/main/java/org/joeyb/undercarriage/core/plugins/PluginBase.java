@@ -69,31 +69,6 @@ public abstract class PluginBase<ConfigT extends ConfigSection> implements Plugi
     }
 
     /**
-     * Called by {@link #configure()} and should be used by inheritors to perform configuration tasks. Overrides should
-     * be sure to call {@code super.onConfigure()} in order to support default configuration provided by the base
-     * classes.
-     */
-    protected void onConfigure() {
-
-    }
-
-    /**
-     * Called by {@link #start()} and should be used by inheritors to perform start tasks. Overrides should be sure to
-     * call {@code super.onStart()} in order to support default start tasks provided by the base classes.
-     */
-    protected void onStart() {
-
-    }
-
-    /**
-     * Called by {@link #stop()} and should be used by inheritors to perform stop tasks. Overrides should be sure to
-     * call {@code super.onStop()} in order to support default stop tasks provided by the base classes.
-     */
-    protected void onStop() {
-
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -123,5 +98,30 @@ public abstract class PluginBase<ConfigT extends ConfigSection> implements Plugi
         onStop();
 
         isStopped = true;
+    }
+
+    /**
+     * Called by {@link #configure()} and should be used by inheritors to perform configuration tasks. Overrides should
+     * be sure to call {@code super.onConfigure()} in order to support default configuration provided by the base
+     * classes.
+     */
+    protected void onConfigure() {
+
+    }
+
+    /**
+     * Called by {@link #start()} and should be used by inheritors to perform start tasks. Overrides should be sure to
+     * call {@code super.onStart()} in order to support default start tasks provided by the base classes.
+     */
+    protected void onStart() {
+
+    }
+
+    /**
+     * Called by {@link #stop()} and should be used by inheritors to perform stop tasks. Overrides should be sure to
+     * call {@code super.onStop()} in order to support default stop tasks provided by the base classes.
+     */
+    protected void onStop() {
+
     }
 }

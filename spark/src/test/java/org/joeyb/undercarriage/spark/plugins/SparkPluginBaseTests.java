@@ -2,7 +2,7 @@ package org.joeyb.undercarriage.spark.plugins;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joeyb.undercarriage.spark.SparkConfigContext;
+import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class SparkPluginBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    public SparkConfigContext configContext;
+    public MockSparkConfigContext configContext;
 
     @Test
     public void serviceReturnsGivenService() {
@@ -33,5 +33,9 @@ public class SparkPluginBaseTests {
         SparkPlugin<SparkConfigSection> plugin = new SparkPluginBase<SparkConfigSection>(configContext, service) { };
 
         assertThat(plugin.service()).isEqualTo(service);
+    }
+
+    private interface MockSparkConfigContext extends ConfigContext<SparkConfigSection> {
+
     }
 }

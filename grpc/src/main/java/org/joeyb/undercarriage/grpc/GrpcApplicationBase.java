@@ -50,34 +50,6 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        ServerBuilder<?> serverBuilder = createServerBuilder(configContext().config().grpc().port());
-
-        for (ServerServiceDefinition serverServiceDefinition : serverServiceDefinitions()) {
-            serverBuilder.addService(serverServiceDefinition);
-        }
-
-        server = serverBuilder.build();
-
-        wrapChecked(() -> server.start());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        server.shutdownNow();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int port() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before we know its port.");
@@ -139,6 +111,34 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      */
     protected Iterable<ServerInterceptor> enabledServerInterceptors() {
         return ImmutableList.of();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        ServerBuilder<?> serverBuilder = createServerBuilder(configContext().config().grpc().port());
+
+        for (ServerServiceDefinition serverServiceDefinition : serverServiceDefinitions()) {
+            serverBuilder.addService(serverServiceDefinition);
+        }
+
+        server = serverBuilder.build();
+
+        wrapChecked(() -> server.start());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        server.shutdownNow();
     }
 
     private Iterable<ServerServiceDefinition> buildServerServiceDefinitions() {

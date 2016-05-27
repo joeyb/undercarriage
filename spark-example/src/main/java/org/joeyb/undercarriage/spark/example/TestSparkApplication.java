@@ -16,7 +16,7 @@ public class TestSparkApplication extends SparkApplicationBase<TestSparkConfig> 
     private final Iterable<Plugin<? super TestSparkConfig>> plugins;
 
     @Inject
-    protected TestSparkApplication(
+    public TestSparkApplication(
             ConfigContext<TestSparkConfig> configContext,
             Service service,
             TestSparkPlugin testSparkPlugin) {

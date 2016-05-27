@@ -5,6 +5,7 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 
 import java.security.InvalidParameterException;
+import java.util.Optional;
 
 /**
  * {@code Application} is the base interface for all application types. It defines the core lifecycle phases.
@@ -38,6 +39,15 @@ public interface Application<ConfigT extends ConfigSection> {
      * Returns whether or not {@link #stop()} has been executed for the application.
      */
     boolean isStopped();
+
+    /**
+     * Returns the instance of the enabled plugin with the given type if it exists, otherwise returns
+     * {@link Optional#empty()}.
+     *
+     * @param pluginClass the requested plugin type
+     * @param <PluginT> the requested plugin type
+     */
+    <PluginT extends Plugin<? super ConfigT>> Optional<PluginT> optionalPlugin(Class<PluginT> pluginClass);
 
     /**
      * Returns the instance of the enabled plugin with the given type.
