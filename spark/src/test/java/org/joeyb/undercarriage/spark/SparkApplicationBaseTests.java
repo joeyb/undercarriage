@@ -85,6 +85,17 @@ public class SparkApplicationBaseTests {
         verify(service).init();
     }
 
+    @Test
+    public void serviceAwaitInitializationIsCalledByStart() {
+        Service service = PowerMockito.mock(Service.class);
+
+        MockSparkApplication application = new MockSparkApplication(configContext, service);
+
+        application.start();
+
+        verify(service).awaitInitialization();
+    }
+
     private static class MockSparkApplication extends SparkApplicationBase<SparkConfigSection> {
 
         MockSparkApplication(ConfigContext<SparkConfigSection> configContext, Service service) {

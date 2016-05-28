@@ -1,12 +1,12 @@
 package org.joeyb.undercarriage.config.yaml;
 
 import static java.util.Objects.requireNonNull;
+import static org.joeyb.undercarriage.core.utils.Exceptions.wrapChecked;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -57,24 +57,24 @@ public class ClasspathYamlConfigReader implements YamlConfigReader {
      */
     @Override
     public Collection<String> readConfigs() {
-        final List<String> configs = new LinkedList<>();
+        return wrapChecked(
+                () -> {
+                    final List<String> configs = new LinkedList<>();
 
-        for (final String source : configSources()) {
-            try {
-                final ClassLoader loader = MoreObjects.firstNonNull(
-                        Thread.currentThread().getContextClassLoader(),
-                        ClasspathYamlConfigReader.class.getClassLoader());
+                    for (final String source : configSources()) {
+                        final ClassLoader loader = MoreObjects.firstNonNull(
+                                Thread.currentThread().getContextClassLoader(),
+                                ClasspathYamlConfigReader.class.getClassLoader());
 
-                final Enumeration<URL> urls = loader.getResources(source);
+                        final Enumeration<URL> urls = loader.getResources(source);
 
-                while (urls.hasMoreElements()) {
-                    configs.add(Resources.toString(urls.nextElement(), StandardCharsets.UTF_8));
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException("Error reading config resources", ex);
-            }
-        }
+                        while (urls.hasMoreElements()) {
+                            configs.add(Resources.toString(urls.nextElement(), StandardCharsets.UTF_8));
+                        }
+                    }
 
-        return configs;
+                    return configs;
+                },
+                "Error reading config resources.");
     }
 }

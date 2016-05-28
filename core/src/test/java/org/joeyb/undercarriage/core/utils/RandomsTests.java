@@ -2,10 +2,16 @@ package org.joeyb.undercarriage.core.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.joeyb.undercarriage.core.utils.UtilsTestHelpers.assertClassOnlyHasPrivateConstructor;
 
 import org.junit.Test;
 
 public class RandomsTests {
+
+    @Test
+    public void randomsOnlyHasPrivateConstructor() {
+        assertClassOnlyHasPrivateConstructor(Randoms.class);
+    }
 
     @Test
     public void randIntReturnsValueInRangeForValidInputs() {

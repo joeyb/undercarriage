@@ -1,6 +1,7 @@
 package org.joeyb.undercarriage.core.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.joeyb.undercarriage.core.utils.UtilsTestHelpers.assertClassOnlyHasPrivateConstructor;
 
 import com.google.common.collect.ImmutableList;
 
@@ -10,6 +11,11 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 public class IterablesTests {
+
+    @Test
+    public void iterablesOnlyHasPrivateConstructor() {
+        assertClassOnlyHasPrivateConstructor(Iterables.class);
+    }
 
     @Test
     public void streamReturnsValidStream() {

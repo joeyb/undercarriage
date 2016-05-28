@@ -22,4 +22,6 @@ public class Randoms {
 
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
+
+    private Randoms() { }
 }
