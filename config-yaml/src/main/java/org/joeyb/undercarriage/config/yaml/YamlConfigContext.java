@@ -73,14 +73,19 @@ public abstract class YamlConfigContext<ConfigT extends ConfigSection> implement
 
         while (fieldNames.hasNext()) {
             final String fieldName = fieldNames.next();
-            final JsonNode jsonNode = mainNode.get(fieldName);
+            final JsonNode mainChildNode = mainNode.get(fieldName);
+            final JsonNode updateChildNode = updateNode.get(fieldName);
 
-            if (jsonNode != null && jsonNode.isObject()) {
-                mergeJsonNodes(jsonNode, updateNode.get(fieldName));
-            } else if (mainNode instanceof ObjectNode) {
-                final JsonNode value = updateNode.get(fieldName);
+            if (mainChildNode != null && mainChildNode.getNodeType() != updateChildNode.getNodeType()) {
+                throw new IllegalStateException(
+                        "YAML structure mismatch on merge. Tried to merge fields with different types for field "
+                        + fieldName + ". That probably means one of your configs is structured incorrectly.");
+            }
 
-                ((ObjectNode) mainNode).set(fieldName, value);
+            if (mainChildNode != null && mainChildNode.isObject()) {
+                mergeJsonNodes(mainChildNode, updateChildNode);
+            } else {
+                ((ObjectNode) mainNode).set(fieldName, updateChildNode);
             }
         }
 
