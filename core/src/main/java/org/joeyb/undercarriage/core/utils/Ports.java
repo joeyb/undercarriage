@@ -1,6 +1,7 @@
 package org.joeyb.undercarriage.core.utils;
 
-import java.io.IOException;
+import static org.joeyb.undercarriage.core.utils.Exceptions.wrapChecked;
+
 import java.net.ServerSocket;
 
 /**
@@ -12,13 +13,13 @@ public class Ports {
      * Returns a random available port.
      */
     public static int availablePort() {
-        try {
-            try (ServerSocket socket = new ServerSocket(0)) {
-                return socket.getLocalPort();
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to find an available port.", e);
-        }
+        return wrapChecked(
+                () -> {
+                    try (ServerSocket socket = new ServerSocket(0)) {
+                        return socket.getLocalPort();
+                    }
+                },
+                "Failed to find an available port.");
     }
 
     private Ports() { }
