@@ -1,5 +1,7 @@
 # `undercarriage`
 
+[![Build Status](https://travis-ci.org/joeyb/undercarriage.svg?branch=master)](https://travis-ci.org/joeyb/undercarriage) [![codecov](https://codecov.io/gh/joeyb/undercarriage/branch/master/graph/badge.svg)](https://codecov.io/gh/joeyb/undercarriage)
+
 `undercarriage` is a general-purpose Java application framework built on top of [Dagger 2](http://google.github.io/dagger/). The project's main design goals are:
 
 - **Testability** - Aim for near 100% branch coverage with fast and accurate tests.
