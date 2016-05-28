@@ -38,6 +38,48 @@ public class YamlConfigContextTests {
     }
 
     @Test
+    public void configSuccessfullyMergesOverlappingSimpleYamlConfigs() {
+        final String value1 = UUID.randomUUID().toString();
+        final String value2 = UUID.randomUUID().toString();
+
+        YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
+
+        when(yamlConfigReader.readConfigs()).thenReturn(
+                ImmutableList.of(
+                        "value: " + value1,
+                        "value: " + value2));
+
+        YamlConfigContext<ValueConfig> yamlConfigContext =
+                new YamlConfigContext<ValueConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
+
+        ValueConfig config = yamlConfigContext.config();
+
+        assertThat(config).isNotNull();
+        assertThat(config.value()).isEqualTo(value2);
+    }
+
+    @Test
+    public void configSuccessfullyMergesOverlappingComplexYamlConfigs() {
+        final String value1 = UUID.randomUUID().toString();
+        final String value2 = UUID.randomUUID().toString();
+
+        YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
+
+        when(yamlConfigReader.readConfigs()).thenReturn(
+                ImmutableList.of(
+                        "valueConfig: {value: \"" + value1 + "\"}",
+                        "valueConfig: {value: \"" + value2 + "\"}"));
+
+        YamlConfigContext<ContainerConfig> yamlConfigContext =
+                new YamlConfigContext<ContainerConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
+
+        ContainerConfig config = yamlConfigContext.config();
+
+        assertThat(config).isNotNull();
+        assertThat(config.valueConfig().value()).isEqualTo(value2);
+    }
+
+    @Test
     public void configUsesConfigSubstitutor() {
         final String config = "value: " + UUID.randomUUID().toString();
 
@@ -55,6 +97,13 @@ public class YamlConfigContextTests {
         yamlConfigContext.config();
 
         verify(configSubstitutor).substitute(eq(config));
+    }
+
+    @Value.Immutable
+    @JsonDeserialize(as = ImmutableContainerConfig.class)
+    interface ContainerConfig extends ConfigSection {
+
+        ValueConfig valueConfig();
     }
 
     @Value.Immutable
