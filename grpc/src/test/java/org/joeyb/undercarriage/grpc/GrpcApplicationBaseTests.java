@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,22 +23,17 @@ import org.joeyb.undercarriage.grpc.plugins.GrpcPluginBase;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ServerServiceDefinition.class)
 public class GrpcApplicationBaseTests {
 
     @Rule
@@ -55,6 +51,28 @@ public class GrpcApplicationBaseTests {
     @Before
     public void setupMockServer() {
         when(serverBuilder.build()).thenReturn(server);
+    }
+
+    @Test
+    public void enabledServerInterceptorsDefaultsToEmpty() {
+        MockGrpcApplication application = new MockGrpcApplication(configContext, serverBuilder);
+
+        Iterable<ServerInterceptor> serverInterceptors = application.enabledServerInterceptors();
+
+        assertThat(serverInterceptors)
+                .isNotNull()
+                .isEmpty();
+    }
+
+    @Test
+    public void enabledServerServiceDefinitionsDefaultsToEmpty() {
+        MockGrpcApplication application = new MockGrpcApplication(configContext, serverBuilder);
+
+        Iterable<ServerServiceDefinition> serverServiceDefinitions = application.enabledServerServiceDefinitions();
+
+        assertThat(serverServiceDefinitions)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
@@ -119,12 +137,12 @@ public class GrpcApplicationBaseTests {
     @Test
     public void serverServiceDefinitionsIncludesApplicationAndPluginDefinitions() {
         Iterable<ServerServiceDefinition> applicationDefinitions = ImmutableList.of(
-                PowerMockito.mock(ServerServiceDefinition.class),
-                PowerMockito.mock(ServerServiceDefinition.class));
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
 
         Iterable<ServerServiceDefinition> pluginDefinitions = ImmutableList.of(
-                PowerMockito.mock(ServerServiceDefinition.class),
-                PowerMockito.mock(ServerServiceDefinition.class));
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
 
         GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(configContext) {
             @Override
@@ -187,12 +205,12 @@ public class GrpcApplicationBaseTests {
     @Test
     public void serverServiceDefinitionsWithInterceptsIncludesApplicationAndPluginDefinitions() {
         Iterable<ServerServiceDefinition> applicationDefinitions = ImmutableList.of(
-                PowerMockito.mock(ServerServiceDefinition.class),
-                PowerMockito.mock(ServerServiceDefinition.class));
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
 
         Iterable<ServerServiceDefinition> pluginDefinitions = ImmutableList.of(
-                PowerMockito.mock(ServerServiceDefinition.class),
-                PowerMockito.mock(ServerServiceDefinition.class));
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
 
         Iterable<ServerInterceptor> applicationInterceptors = ImmutableList.of(
                 mock(ServerInterceptor.class),
@@ -252,6 +270,53 @@ public class GrpcApplicationBaseTests {
         assertThat(interceptedServerServiceDefinitions)
                 .containsAll(applicationDefinitions)
                 .containsAll(pluginDefinitions);
+    }
+
+    @Test
+    public void serverBuilderAddServiceIsCalledForEachDefinitionWithInterceptorsByStart() {
+        Iterable<ServerServiceDefinition> applicationDefinitions = ImmutableList.of(
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
+                ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
+
+        Iterable<ServerInterceptor> applicationInterceptors = ImmutableList.of(
+                mock(ServerInterceptor.class),
+                mock(ServerInterceptor.class));
+
+        Collection<ServerServiceDefinition> interceptedServerServiceDefinitions = new LinkedList<>();
+
+        MockGrpcApplication application = new MockGrpcApplication(configContext, serverBuilder) {
+
+            @Override
+            protected Iterable<ServerServiceDefinition> enabledServerServiceDefinitions() {
+                return applicationDefinitions;
+            }
+
+            @Override
+            protected Iterable<ServerInterceptor> enabledServerInterceptors() {
+                return applicationInterceptors;
+            }
+
+            @Override
+            ServerServiceDefinition applyServiceInterceptor(ServerServiceDefinition serverServiceDefinition,
+                                                            List<ServerInterceptor> serverInterceptors) {
+                // Make sure all interceptors are applied.
+                assertThat(serverInterceptors)
+                        .containsAll(applicationInterceptors);
+
+                ServerServiceDefinition interceptedServerServiceDefinition =
+                        ServerServiceDefinition.builder(UUID.randomUUID().toString()).build();
+
+                interceptedServerServiceDefinitions.add(interceptedServerServiceDefinition);
+
+                return interceptedServerServiceDefinition;
+            }
+        };
+
+        application.start();
+
+        for (ServerServiceDefinition serverServiceDefinition : interceptedServerServiceDefinitions) {
+            verify(serverBuilder).addService(eq(serverServiceDefinition));
+        }
     }
 
     private static class MockGrpcApplication extends GrpcApplicationBase<GrpcConfigSection> {

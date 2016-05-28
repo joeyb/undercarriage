@@ -50,7 +50,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public int port() {
+    public final int port() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before we know its port.");
         }
@@ -62,7 +62,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public Server server() {
+    public final Server server() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before its server is available.");
         }
@@ -74,7 +74,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public Iterable<ServerServiceDefinition> serverServiceDefinitions() {
+    public final Iterable<ServerServiceDefinition> serverServiceDefinitions() {
         return serverServiceDefinitions.get();
     }
 
@@ -82,7 +82,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public Iterable<ServerServiceDefinition> serverServiceDefinitionsWithInterceptors() {
+    public final Iterable<ServerServiceDefinition> serverServiceDefinitionsWithInterceptors() {
         return serverServiceDefinitionsWithInterceptors.get();
     }
 
@@ -90,7 +90,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public Iterable<ServerInterceptor> serverInterceptors() {
+    public final Iterable<ServerInterceptor> serverInterceptors() {
         return serverInterceptors.get();
     }
 
@@ -122,7 +122,7 @@ public abstract class GrpcApplicationBase<ConfigT extends GrpcConfigSection>
 
         ServerBuilder<?> serverBuilder = createServerBuilder(configContext().config().grpc().port());
 
-        for (ServerServiceDefinition serverServiceDefinition : serverServiceDefinitions()) {
+        for (ServerServiceDefinition serverServiceDefinition : serverServiceDefinitionsWithInterceptors()) {
             serverBuilder.addService(serverServiceDefinition);
         }
 
