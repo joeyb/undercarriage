@@ -1,6 +1,7 @@
 package org.joeyb.undercarriage.config.yaml;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,6 +39,26 @@ public class YamlConfigContextTests {
     }
 
     @Test
+    public void configIgnoresEmptyConfig() {
+        final String value = UUID.randomUUID().toString();
+
+        YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
+
+        when(yamlConfigReader.readConfigs()).thenReturn(
+                ImmutableList.of(
+                        "value: " + value,
+                        ""));
+
+        YamlConfigContext<ValueConfig> yamlConfigContext =
+                new YamlConfigContext<ValueConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
+
+        ValueConfig config = yamlConfigContext.config();
+
+        assertThat(config).isNotNull();
+        assertThat(config.value()).isEqualTo(value);
+    }
+
+    @Test
     public void configSuccessfullyMergesOverlappingSimpleYamlConfigs() {
         final String value1 = UUID.randomUUID().toString();
         final String value2 = UUID.randomUUID().toString();
@@ -59,16 +80,22 @@ public class YamlConfigContextTests {
     }
 
     @Test
-    public void configSuccessfullyMergesOverlappingComplexYamlConfigs() {
-        final String value1 = UUID.randomUUID().toString();
-        final String value2 = UUID.randomUUID().toString();
+    public void configSuccessfullyMergesOverlappingComplexYamlConfigsValuePresentInFirstConfigMissingInSecond() {
+        final String valueConfig1Value1 = UUID.randomUUID().toString();
+        final String valueConfig1Value2 = UUID.randomUUID().toString();
+        final String valueConfig2Value1 = UUID.randomUUID().toString();
 
         YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
 
-        when(yamlConfigReader.readConfigs()).thenReturn(
-                ImmutableList.of(
-                        "valueConfig: {value: \"" + value1 + "\"}",
-                        "valueConfig: {value: \"" + value2 + "\"}"));
+        when(yamlConfigReader.readConfigs()).thenReturn(ImmutableList.of(
+                // Config #1
+                "valueConfig1:\n"
+                + "  value: " + valueConfig1Value1 + "\n"
+                + "valueConfig2:\n"
+                + "  value: " + valueConfig2Value1 + "\n",
+                // Config #2
+                "valueConfig1:\n"
+                + "  value: " + valueConfig1Value2 + "\n"));
 
         YamlConfigContext<ContainerConfig> yamlConfigContext =
                 new YamlConfigContext<ContainerConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
@@ -76,7 +103,62 @@ public class YamlConfigContextTests {
         ContainerConfig config = yamlConfigContext.config();
 
         assertThat(config).isNotNull();
-        assertThat(config.valueConfig().value()).isEqualTo(value2);
+        assertThat(config.valueConfig1().value()).isEqualTo(valueConfig1Value2);
+        assertThat(config.valueConfig2().value()).isEqualTo(valueConfig2Value1);
+    }
+
+    @Test
+    public void configSuccessfullyMergesOverlappingComplexYamlConfigsValueMissingInFirstConfigPresentInSecond() {
+        final String valueConfig1Value1 = UUID.randomUUID().toString();
+        final String valueConfig1Value2 = UUID.randomUUID().toString();
+        final String valueConfig2Value2 = UUID.randomUUID().toString();
+
+        YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
+
+        when(yamlConfigReader.readConfigs()).thenReturn(ImmutableList.of(
+                // Config #1
+                "valueConfig1:\n"
+                + "  value: " + valueConfig1Value1 + "\n",
+                // Config #2
+                "valueConfig1:\n"
+                + "  value: " + valueConfig1Value2 + "\n"
+                + "valueConfig2:\n"
+                + "  value: " + valueConfig2Value2 + "\n"));
+
+        YamlConfigContext<ContainerConfig> yamlConfigContext =
+                new YamlConfigContext<ContainerConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
+
+        ContainerConfig config = yamlConfigContext.config();
+
+        assertThat(config).isNotNull();
+        assertThat(config.valueConfig1().value()).isEqualTo(valueConfig1Value2);
+        assertThat(config.valueConfig2().value()).isEqualTo(valueConfig2Value2);
+    }
+
+    @Test
+    public void configThrowsForYamlStructureMismatch() {
+        final String valueConfig1Value1 = UUID.randomUUID().toString();
+        final String valueConfig1Value2 = UUID.randomUUID().toString();
+        final String valueConfig2Value2 = UUID.randomUUID().toString();
+
+        YamlConfigReader yamlConfigReader = mock(YamlConfigReader.class);
+
+        when(yamlConfigReader.readConfigs()).thenReturn(ImmutableList.of(
+                // Config #1 - Invalid structure
+                "valueConfig1: " + valueConfig1Value1 + "\n",
+                // Config #2
+                "valueConfig1:\n"
+                + "  value: " + valueConfig1Value2 + "\n"
+                + "valueConfig2:\n"
+                + "  value: " + valueConfig2Value2 + "\n"));
+
+        YamlConfigContext<ContainerConfig> yamlConfigContext =
+                new YamlConfigContext<ContainerConfig>(new NullConfigSubstitutor(), yamlConfigReader) { };
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(yamlConfigContext::config)
+                // Make sure the exception mentions the bad field name
+                .matches(e -> e.getMessage().contains("valueConfig1"));
     }
 
     @Test
@@ -103,7 +185,9 @@ public class YamlConfigContextTests {
     @JsonDeserialize(as = ImmutableContainerConfig.class)
     interface ContainerConfig extends ConfigSection {
 
-        ValueConfig valueConfig();
+        ValueConfig valueConfig1();
+
+        ValueConfig valueConfig2();
     }
 
     @Value.Immutable
