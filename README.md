@@ -19,3 +19,5 @@ The [core](core/) library provides the foundational framework for building an ap
 | ------- | ------- |
 | [config-yaml](config-yaml/) | `"org.joeyb.undercarriage:config-yaml:$undercarriageVersion"` |
 | [core](core/) | `"org.joeyb.undercarriage:core:$undercarriageVersion"` |
+| [grpc](grpc/) | `"org.joeyb.undercarriage:grpc:$undercarriageVersion"` |
+| [spark](spark/) | `"org.joeyb.undercarriage:spark:$undercarriageVersion"` |

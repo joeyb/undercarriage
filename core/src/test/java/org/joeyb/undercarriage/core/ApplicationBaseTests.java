@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.inOrder;
@@ -348,7 +349,28 @@ public class ApplicationBaseTests {
     }
 
     @Test
-    public void startCallsConfigure() throws InterruptedException {
+    public void startDoesNotCallConfigureIfConfigured() throws InterruptedException {
+        CountDownLatch onConfigureLatch = new CountDownLatch(1);
+
+        MockApplication application = new MockApplication(configContext) {
+            @Override
+            protected void onConfigure() {
+                if (onConfigureLatch.getCount() == 0) {
+                    fail("Already configured");
+                }
+
+                onConfigureLatch.countDown();
+            }
+        };
+
+        application.configure();
+        application.start();
+
+        onConfigureLatch.await();
+    }
+
+    @Test
+    public void startCallsConfigureIfNotConfigured() throws InterruptedException {
         CountDownLatch onConfigureLatch = new CountDownLatch(1);
 
         MockApplication application = new MockApplication(configContext) {
