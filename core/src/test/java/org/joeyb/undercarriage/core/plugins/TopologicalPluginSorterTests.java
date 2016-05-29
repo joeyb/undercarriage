@@ -10,6 +10,10 @@ import com.google.common.collect.ImmutableList;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.junit.Test;
 
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
 public class TopologicalPluginSorterTests {
 
     @Test
@@ -122,6 +126,105 @@ public class TopologicalPluginSorterTests {
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> pluginSorter.sort(ImmutableList.of(parentPlugin, cyclePlugin1, cyclePlugin2)));
+    }
+
+    @Test
+    public void directedGraphConstructorAddsAllNodesWithoutEdges() {
+        final String node1 = UUID.randomUUID().toString();
+        final String node2 = UUID.randomUUID().toString();
+
+        final Collection<String> nodes = ImmutableList.of(node1, node2);
+
+        TopologicalPluginSorter.DirectedGraph<String> graph = new TopologicalPluginSorter.DirectedGraph<>(nodes);
+
+        graph.checkFromAndToExist(node1, node2);
+
+        assertThat(graph.hasEdges()).isEqualTo(false);
+
+        assertThat(graph.getEdges(node1))
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.getEdges(node2))
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.getNodesWithEdges())
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.hasIncomingEdges(node1)).isEqualTo(false);
+        assertThat(graph.hasIncomingEdges(node2)).isEqualTo(false);
+    }
+
+    @Test
+    public void directedGraphCheckFromAndToExistThrowsIfEitherDoesNotExist() {
+        final String node1 = UUID.randomUUID().toString();
+
+        final Collection<String> nodes = ImmutableList.of(node1);
+
+        TopologicalPluginSorter.DirectedGraph<String> graph = new TopologicalPluginSorter.DirectedGraph<>(nodes);
+
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> graph.checkFromAndToExist(node1, UUID.randomUUID().toString()));
+
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> graph.checkFromAndToExist(UUID.randomUUID().toString(), node1));
+    }
+
+    @Test
+    public void directedGraphAddEdgeIsSuccessful() {
+        final String node1 = UUID.randomUUID().toString();
+        final String node2 = UUID.randomUUID().toString();
+
+        final Collection<String> nodes = ImmutableList.of(node1, node2);
+
+        TopologicalPluginSorter.DirectedGraph<String> graph = new TopologicalPluginSorter.DirectedGraph<>(nodes);
+
+        graph.addEdge(node1, node2);
+
+        assertThat(graph.hasEdges()).isEqualTo(true);
+
+        assertThat(graph.getEdges(node1)).containsExactly(node2);
+
+        assertThat(graph.getEdges(node2))
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.getNodesWithEdges()).containsExactly(node1);
+
+        assertThat(graph.hasIncomingEdges(node1)).isEqualTo(false);
+        assertThat(graph.hasIncomingEdges(node2)).isEqualTo(true);
+    }
+
+    @Test
+    public void directedGraphRemoveEdgeIsSuccessful() {
+        final String node1 = UUID.randomUUID().toString();
+        final String node2 = UUID.randomUUID().toString();
+
+        final Collection<String> nodes = ImmutableList.of(node1, node2);
+
+        TopologicalPluginSorter.DirectedGraph<String> graph = new TopologicalPluginSorter.DirectedGraph<>(nodes);
+
+        graph.addEdge(node1, node2);
+        graph.removeEdge(node1, node2);
+
+        assertThat(graph.hasEdges()).isEqualTo(false);
+
+        assertThat(graph.getEdges(node1))
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.getEdges(node2))
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.getNodesWithEdges())
+                .isNotNull()
+                .isEmpty();
+
+        assertThat(graph.hasIncomingEdges(node1)).isEqualTo(false);
+        assertThat(graph.hasIncomingEdges(node2)).isEqualTo(false);
     }
 
     private abstract static class ParentPlugin implements MockPlugin {
