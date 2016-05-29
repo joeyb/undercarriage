@@ -16,7 +16,7 @@ public class TestSparkApplicationConfigModule {
 
     @Provides
     @Singleton
-    static ConfigContext<TestSparkConfig> provideConfigContext() {
+    ConfigContext<TestSparkConfig> provideConfigContext() {
         return new ManualConfigContext<>(
                 ImmutableTestSparkConfig.builder()
                         .spark(ImmutableSparkConfig.builder()
@@ -26,7 +26,7 @@ public class TestSparkApplicationConfigModule {
     }
 
     @Provides
-    static ConfigContext<? extends TestSparkConfig> provideTestSparkConfigConfigContext(
+    ConfigContext<? extends TestSparkConfig> provideTestSparkConfigConfigContext(
             ConfigContext<TestSparkConfig> configContext) {
 
         return configContext;

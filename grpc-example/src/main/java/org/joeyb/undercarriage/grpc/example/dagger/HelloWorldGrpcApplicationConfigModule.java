@@ -14,12 +14,9 @@ import javax.inject.Singleton;
 @Module
 public class HelloWorldGrpcApplicationConfigModule {
 
-    /**
-     * Returns the app's {@link ConfigContext}.
-     */
     @Provides
     @Singleton
-    public ConfigContext<HelloWorldConfig> provideConfigContext() {
+    ConfigContext<HelloWorldConfig> provideConfigContext() {
         return new ManualConfigContext<>(
                 ImmutableHelloWorldConfig.builder()
                         .grpc(ImmutableGrpcConfig.builder()
