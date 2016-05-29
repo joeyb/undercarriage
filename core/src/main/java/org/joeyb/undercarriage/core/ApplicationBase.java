@@ -27,6 +27,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
     private static final PluginSorter DEFAULT_PLUGIN_SORTER = new TopologicalPluginSorter();
 
     private final ConfigContext<ConfigT> configContext;
+    private final Object lock = new Object();
     private final Supplier<ImmutableList<Plugin<? super ConfigT>>> plugins =
             Suppliers.memoize(this::buildAndSortPlugins);
 
@@ -50,16 +51,10 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public final synchronized void configure() {
-        if (isConfigured()) {
-            throw new IllegalStateException("Applications can only be configured once.");
+    public final void configure() {
+        synchronized (lock) {
+            doConfigure();
         }
-
-        plugins().forEach(Plugin::configure);
-
-        onConfigure();
-
-        isConfigured = true;
     }
 
     /**
@@ -137,38 +132,20 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
      * {@inheritDoc}
      */
     @Override
-    public final synchronized void start() {
-        if (isStarted()) {
-            throw new IllegalStateException("Applications can only be started once.");
+    public final void start() {
+        synchronized (lock) {
+            doStart();
         }
-
-        configure();
-
-        plugins().forEach(Plugin::start);
-
-        onStart();
-
-        isStarted = true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final synchronized void stop() {
-        if (isStopped()) {
-            throw new IllegalStateException("Applications can only be stopped once.");
+    public final void stop() {
+        synchronized (lock) {
+            doStop();
         }
-
-        if (!isStarted()) {
-            throw new IllegalStateException("Applications must be started before they can be stopped.");
-        }
-
-        ImmutableList.copyOf(plugins()).reverse().forEach(Plugin::stop);
-
-        onStop();
-
-        isStopped = true;
     }
 
     /**
@@ -246,5 +223,49 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
         return ImmutableList.copyOf(pluginSorter().sort(ImmutableList.copyOf(enabledPlugins()).stream()
                 .filter(p -> !disabledPlugins.stream().anyMatch(dp -> dp.isAssignableFrom(p.getClass())))
                 .collect(Collectors.toList())));
+    }
+
+    private void doConfigure() {
+        if (isConfigured()) {
+            throw new IllegalStateException("Applications can only be configured once.");
+        }
+
+        plugins().forEach(Plugin::configure);
+
+        onConfigure();
+
+        isConfigured = true;
+    }
+
+    private void doStart() {
+        if (isStarted()) {
+            throw new IllegalStateException("Applications can only be started once.");
+        }
+
+        if (!isConfigured()) {
+            doConfigure();
+        }
+
+        plugins().forEach(Plugin::start);
+
+        onStart();
+
+        isStarted = true;
+    }
+
+    private void doStop() {
+        if (isStopped()) {
+            throw new IllegalStateException("Applications can only be stopped once.");
+        }
+
+        if (!isStarted()) {
+            throw new IllegalStateException("Applications must be started before they can be stopped.");
+        }
+
+        ImmutableList.copyOf(plugins()).reverse().forEach(Plugin::stop);
+
+        onStop();
+
+        isStopped = true;
     }
 }
