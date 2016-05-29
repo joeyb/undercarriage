@@ -16,8 +16,8 @@ build/
 .idea/
 out/
 generated/
-generated_protos/
 generated_tests/
+src_generated_protos/
 
 # OSX
 .DS_Store

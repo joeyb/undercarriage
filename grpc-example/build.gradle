@@ -20,6 +20,8 @@ protobuf {
             grpc {}
         }
     }
+    // Configure the output dir to be named so it's sorted after "src" to play nicely with IntelliJ 2016
+    generatedFilesBaseDir = file("$projectDir/src_generated_protos")
 }
 
 idea {
