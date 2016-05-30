@@ -4,6 +4,8 @@ dependencies {
     compile project(':grpc')
 }
 
+apply from: '../dagger.gradle'
+
 protobuf {
     protoc {
         // The version of protoc must match protobuf-java. If you don't depend on protobuf-java directly, you will be

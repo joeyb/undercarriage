@@ -1,0 +1,10 @@
+dependencies {
+    // For provided dependencies we need to explicitly exclude any transitive dependencies that we also need at
+    // runtime, otherwise the provided scope plugin will explicitly exclude them at runtime.
+    provided ("com.google.dagger:dagger-compiler:$daggerVersion") {
+        exclude group: 'com.google.dagger', module: 'dagger'
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+
+    compile "com.google.dagger:dagger:$daggerVersion"
+}
