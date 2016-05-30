@@ -1,4 +1,4 @@
-package org.joeyb.undercarriage.spark.dagger;
+package org.joeyb.undercarriage.spark.example.dagger;
 
 import dagger.Module;
 import dagger.Provides;

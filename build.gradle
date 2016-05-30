@@ -30,15 +30,9 @@ subprojects {
     sourceCompatibility = 1.8
 
     dependencies {
-        // For provided dependencies we need to explicitly exclude any transitive dependencies that we also need at
-        // runtime, otherwise the provided scope plugin will explicitly exclude them at runtime.
-        provided ("com.google.dagger:dagger-compiler:$daggerVersion") {
-            exclude group: 'com.google.dagger', module: 'dagger'
-            exclude group: 'com.google.guava', module: 'guava'
-        }
         provided "org.immutables:value:$immutablesVersion"
 
-        compile "com.google.dagger:dagger:$daggerVersion"
+        compile "javax.inject:javax.inject:$javaxInjectVersion"
 
         testCompile "junit:junit:$junitVersion"
         testCompile "org.assertj:assertj-core:$assertjVersion"
