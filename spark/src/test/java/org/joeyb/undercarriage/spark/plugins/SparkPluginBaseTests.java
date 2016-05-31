@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.spark.plugins;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
 import org.junit.Rule;
@@ -24,13 +25,19 @@ public class SparkPluginBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
+    public ApplicationResolver applicationResolver;
+
+    @Mock
     public MockSparkConfigContext configContext;
 
     @Test
     public void serviceReturnsGivenService() {
         Service service = PowerMockito.mock(Service.class);
 
-        SparkPlugin<SparkConfigSection> plugin = new SparkPluginBase<SparkConfigSection>(configContext, service) { };
+        SparkPlugin<SparkConfigSection> plugin = new SparkPluginBase<SparkConfigSection>(
+                applicationResolver,
+                configContext,
+                service) { };
 
         assertThat(plugin.service()).isEqualTo(service);
     }

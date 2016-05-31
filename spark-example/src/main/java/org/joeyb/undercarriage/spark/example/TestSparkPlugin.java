@@ -1,5 +1,6 @@
 package org.joeyb.undercarriage.spark.example;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.spark.plugins.SparkPluginBase;
 
@@ -10,8 +11,11 @@ import javax.inject.Inject;
 public class TestSparkPlugin extends SparkPluginBase<TestSparkConfig> {
 
     @Inject
-    public TestSparkPlugin(ConfigContext<? extends TestSparkConfig> configContext, Service service) {
-        super(configContext, service);
+    public TestSparkPlugin(
+            ApplicationResolver applicationResolver,
+            ConfigContext<? extends TestSparkConfig> configContext,
+            Service service) {
+        super(applicationResolver, configContext, service);
     }
 
     @Override

@@ -14,6 +14,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.core.utils.Randoms;
@@ -38,6 +39,9 @@ public class GrpcApplicationBaseTests {
 
     @Rule
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Mock
+    public ApplicationResolver applicationResolver;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     public MockGrpcConfigContext configContext;
@@ -144,7 +148,9 @@ public class GrpcApplicationBaseTests {
                 ServerServiceDefinition.builder(UUID.randomUUID().toString()).build(),
                 ServerServiceDefinition.builder(UUID.randomUUID().toString()).build());
 
-        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(configContext) {
+        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(
+                applicationResolver,
+                configContext) {
             @Override
             public Iterable<ServerServiceDefinition> serverServiceDefinitions() {
                 return pluginDefinitions;
@@ -178,7 +184,9 @@ public class GrpcApplicationBaseTests {
                 mock(ServerInterceptor.class),
                 mock(ServerInterceptor.class));
 
-        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(configContext) {
+        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(
+                applicationResolver,
+                configContext) {
             @Override
             public Iterable<ServerInterceptor> serverInterceptors() {
                 return pluginInterceptors;
@@ -220,7 +228,9 @@ public class GrpcApplicationBaseTests {
                 mock(ServerInterceptor.class),
                 mock(ServerInterceptor.class));
 
-        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(configContext) {
+        GrpcPlugin<GrpcConfigSection> plugin = new GrpcPluginBase<GrpcConfigSection>(
+                applicationResolver,
+                configContext) {
             @Override
             public Iterable<ServerServiceDefinition> serverServiceDefinitions() {
                 return pluginDefinitions;

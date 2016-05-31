@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.plugins.PluginBase;
 import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
@@ -18,8 +19,8 @@ public abstract class GrpcPluginBase<ConfigT extends GrpcConfigSection>
         extends PluginBase<ConfigT>
         implements GrpcPlugin<ConfigT> {
 
-    protected GrpcPluginBase(ConfigContext<? extends ConfigT> configContext) {
-        super(configContext);
+    protected GrpcPluginBase(ApplicationResolver applicationResolver, ConfigContext<? extends ConfigT> configContext) {
+        super(applicationResolver, configContext);
     }
 
     /**
