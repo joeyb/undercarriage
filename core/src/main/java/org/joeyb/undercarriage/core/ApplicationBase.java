@@ -2,8 +2,6 @@ package org.joeyb.undercarriage.core;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 
 import org.joeyb.undercarriage.core.config.ConfigContext;
@@ -12,9 +10,11 @@ import org.joeyb.undercarriage.core.plugins.Plugin;
 import org.joeyb.undercarriage.core.plugins.PluginSorter;
 import org.joeyb.undercarriage.core.plugins.TopologicalPluginSorter;
 import org.joeyb.undercarriage.core.utils.Iterables;
+import org.joeyb.undercarriage.core.utils.Suppliers;
 
 import java.security.InvalidParameterException;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**

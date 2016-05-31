@@ -11,9 +11,11 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.utils.GenericClass;
 import org.joeyb.undercarriage.jersey.config.JerseyConfigSection;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +41,20 @@ public class JerseyApplicationBaseTests {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     public MockJerseyConfigContext configContext;
 
+    private ResourceConfig resourceConfig;
+
+    @Before
+    public void setUpResourceConfig() {
+        resourceConfig = new ResourceConfig();
+    }
+
     @Test
     public void constructorWithBinderBuildsValidServiceLocatorAndSetsConfigContextAndResourceConfig() {
         Binder binder = new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(configContext).to(new GenericClass<ConfigContext<JerseyConfigSection>>() { }.getGenericClass());
+                bind(resourceConfig).to(ResourceConfig.class);
             }
         };
 
@@ -59,10 +69,7 @@ public class JerseyApplicationBaseTests {
 
         assertThat(configContextFromServiceLocator).isEqualTo(configContext);
 
-        // Ensure ResourceConfig is created and the same instance is returned on subsequent calls.
-        assertThat(application.resourceConfig())
-                .isNotNull()
-                .isEqualTo(application.resourceConfig());
+        assertThat(application.resourceConfig()).isEqualTo(resourceConfig);
     }
 
     @Test
@@ -75,10 +82,7 @@ public class JerseyApplicationBaseTests {
         assertThat(application.serviceLocator()).isEqualTo(serviceLocator);
         assertThat(application.configContext()).isEqualTo(configContext);
 
-        // Ensure ResourceConfig is created and the same instance is returned on subsequent calls.
-        assertThat(application.resourceConfig())
-                .isNotNull()
-                .isEqualTo(application.resourceConfig());
+        assertThat(application.resourceConfig()).isEqualTo(resourceConfig);
     }
 
     @Test
@@ -151,6 +155,7 @@ public class JerseyApplicationBaseTests {
                 binderConsumer.accept(this);
 
                 bind(configContext).to(new GenericClass<ConfigContext<JerseyConfigSection>>() { }.getGenericClass());
+                bind(resourceConfig).to(ResourceConfig.class);
             }
         };
 

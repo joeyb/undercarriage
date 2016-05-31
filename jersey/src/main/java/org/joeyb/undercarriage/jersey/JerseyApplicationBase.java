@@ -41,14 +41,28 @@ public abstract class JerseyApplicationBase<ConfigT extends JerseyConfigSection>
 
     private Server server;
 
+    /**
+     * Constructs an instance of {@link JerseyApplicationBase} using the given {@link Binder}. This constructor
+     * automatically creates a {@link ServiceLocator} for the {@link Binder} and calls
+     * {@link JerseyApplicationBase#JerseyApplicationBase(ServiceLocator)}.
+     *
+     * @param binder the app's HK2-based DI configuration
+     */
     protected JerseyApplicationBase(Binder binder) {
         this(createServiceLocator(binder));
     }
 
+    /**
+     * Constructs an instance of {@link JerseyApplicationBase} using the given {@link ServiceLocator}. This constructor
+     * uses the {@link ServiceLocator} to get the instances for the app's {@link ConfigContext} and its
+     * {@link ResourceConfig}. Both should be configured as singletons in the DI configuration.
+     *
+     * @param serviceLocator the app's HK2-based service locator
+     */
     protected JerseyApplicationBase(ServiceLocator serviceLocator) {
         super(serviceLocator.getService(new GenericClass<ConfigContext<ConfigT>>() { }.getGenericClass()));
 
-        this.resourceConfig = createResourceConfig();
+        this.resourceConfig = serviceLocator.getService(ResourceConfig.class);
         this.serviceLocator = serviceLocator;
     }
 
@@ -126,11 +140,6 @@ public abstract class JerseyApplicationBase<ConfigT extends JerseyConfigSection>
         ServiceLocatorUtilities.bind(serviceLocator, binder);
 
         return serviceLocator;
-    }
-
-    @VisibleForTesting
-    ResourceConfig createResourceConfig() {
-        return new ResourceConfig();
     }
 
     @VisibleForTesting

@@ -10,17 +10,17 @@ import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.google.common.base.Strings;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 import net.jodah.typetools.TypeResolver;
 
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.joeyb.undercarriage.core.config.substitutors.ConfigSubstitutor;
+import org.joeyb.undercarriage.core.utils.Suppliers;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 /**
  * {@code YamlConfigContext} is a {@link ConfigContext} implementation that reads the config from YAML files. Due to
