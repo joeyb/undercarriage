@@ -1,0 +1,12 @@
+dependencies {
+    compile project(':core')
+
+    compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$jacksonVersion"
+    compile "org.glassfish.jersey.containers:jersey-container-jetty-http:$jerseyVersion"
+    compile "org.glassfish.jersey.containers:jersey-container-jetty-servlet:$jerseyVersion"
+    compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
+    compile "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion"
+
+    testCompile "org.powermock:powermock-api-mockito2:$powermockVersion"
+    testCompile "org.powermock:powermock-module-junit4:$powermockVersion"
+}
