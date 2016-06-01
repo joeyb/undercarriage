@@ -12,6 +12,8 @@ import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.joeyb.undercarriage.core.ApplicationResolver;
+import org.joeyb.undercarriage.core.LateBoundApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.utils.GenericClass;
 import org.joeyb.undercarriage.jersey.config.JerseyConfigSection;
@@ -41,10 +43,12 @@ public class JerseyApplicationBaseTests {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     public MockJerseyConfigContext configContext;
 
+    private LateBoundApplicationResolver applicationResolver;
     private ResourceConfig resourceConfig;
 
     @Before
-    public void setUpResourceConfig() {
+    public void setUpApplicationResolverAndResourceConfig() {
+        applicationResolver = new LateBoundApplicationResolver();
         resourceConfig = new ResourceConfig();
     }
 
@@ -53,6 +57,7 @@ public class JerseyApplicationBaseTests {
         Binder binder = new AbstractBinder() {
             @Override
             protected void configure() {
+                bind(applicationResolver).to(ApplicationResolver.class).to(LateBoundApplicationResolver.class);
                 bind(configContext).to(new GenericClass<ConfigContext<JerseyConfigSection>>() { }.getGenericClass());
                 bind(resourceConfig).to(ResourceConfig.class);
             }
@@ -70,6 +75,11 @@ public class JerseyApplicationBaseTests {
         assertThat(configContextFromServiceLocator).isEqualTo(configContext);
 
         assertThat(application.resourceConfig()).isEqualTo(resourceConfig);
+
+        ApplicationResolver applicationResolverFromServiceLocator = application.serviceLocator()
+                .getService(ApplicationResolver.class);
+
+        assertThat(applicationResolverFromServiceLocator.application()).isEqualTo(application);
     }
 
     @Test
@@ -83,6 +93,11 @@ public class JerseyApplicationBaseTests {
         assertThat(application.configContext()).isEqualTo(configContext);
 
         assertThat(application.resourceConfig()).isEqualTo(resourceConfig);
+
+        ApplicationResolver applicationResolverFromServiceLocator = application.serviceLocator()
+                .getService(ApplicationResolver.class);
+
+        assertThat(applicationResolverFromServiceLocator.application()).isEqualTo(application);
     }
 
     @Test
@@ -154,6 +169,7 @@ public class JerseyApplicationBaseTests {
             protected void configure() {
                 binderConsumer.accept(this);
 
+                bind(applicationResolver).to(ApplicationResolver.class).to(LateBoundApplicationResolver.class);
                 bind(configContext).to(new GenericClass<ConfigContext<JerseyConfigSection>>() { }.getGenericClass());
                 bind(resourceConfig).to(ResourceConfig.class);
             }

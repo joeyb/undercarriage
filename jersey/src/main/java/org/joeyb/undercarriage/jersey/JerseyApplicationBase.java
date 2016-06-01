@@ -15,6 +15,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.joeyb.undercarriage.core.ApplicationBase;
+import org.joeyb.undercarriage.core.LateBoundApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.utils.GenericClass;
 import org.joeyb.undercarriage.jersey.config.JerseyConfigSection;
@@ -55,7 +56,9 @@ public abstract class JerseyApplicationBase<ConfigT extends JerseyConfigSection>
     /**
      * Constructs an instance of {@link JerseyApplicationBase} using the given {@link ServiceLocator}. This constructor
      * uses the {@link ServiceLocator} to get the instances for the app's {@link ConfigContext} and its
-     * {@link ResourceConfig}. Both should be configured as singletons in the DI configuration.
+     * {@link ResourceConfig}. Both should be configured as singletons in the DI configuration. It also uses the
+     * {@link ServiceLocator} to get the instance for the app's {@link LateBoundApplicationResolver} and sets this
+     * instance as the application instance. It should also be configured as a singleton in the DI configuration.
      *
      * @param serviceLocator the app's HK2-based service locator
      */
@@ -64,6 +67,11 @@ public abstract class JerseyApplicationBase<ConfigT extends JerseyConfigSection>
 
         this.resourceConfig = serviceLocator.getService(ResourceConfig.class);
         this.serviceLocator = serviceLocator;
+
+        LateBoundApplicationResolver applicationResolver =
+                serviceLocator.getService(LateBoundApplicationResolver.class);
+
+        applicationResolver.setApplication(this);
     }
 
     /**
