@@ -3,6 +3,7 @@ package org.joeyb.undercarriage.core.plugins;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 import org.junit.Rule;
@@ -19,25 +20,42 @@ public class PluginBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
+    public ApplicationResolver applicationResolver;
+
+    @Mock
     public ConfigContext<ConfigSection> configContext;
 
     @Test
+    public void givenApplicationResolverIsReturnedByGetter() {
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
+
+        assertThat(plugin.applicationResolver())
+                .isEqualTo(applicationResolver);
+    }
+
+    @Test
     public void givenConfigContextIsReturnedByGetter() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         assertThat(plugin.configContext())
                 .isEqualTo(configContext);
     }
 
     @Test
+    public void pluginConstructionThrowsForNullApplicationResolver() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> new MockPlugin(null, configContext));
+    }
+
+    @Test
     public void pluginConstructionThrowsForNullConfigContext() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> new MockPlugin(null));
+                .isThrownBy(() -> new MockPlugin(applicationResolver, null));
     }
 
     @Test
     public void configureThrowsIfExecutedTwice() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         plugin.configure();
 
@@ -49,7 +67,7 @@ public class PluginBaseTests {
     public void configureCallsOnConfigure() throws InterruptedException {
         CountDownLatch onConfigureLatch = new CountDownLatch(1);
 
-        MockPlugin plugin = new MockPlugin(configContext) {
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext) {
             @Override
             protected void onConfigure() {
                 onConfigureLatch.countDown();
@@ -63,7 +81,7 @@ public class PluginBaseTests {
 
     @Test
     public void isConfiguredIsSetByConfigure() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         assertThat(plugin.isConfigured()).isEqualTo(false);
 
@@ -74,7 +92,7 @@ public class PluginBaseTests {
 
     @Test
     public void isStartedIsSetByStart() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         assertThat(plugin.isStarted()).isEqualTo(false);
 
@@ -85,7 +103,7 @@ public class PluginBaseTests {
 
     @Test
     public void isStoppedIsSetByStop() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         assertThat(plugin.isStopped()).isEqualTo(false);
 
@@ -99,7 +117,7 @@ public class PluginBaseTests {
     public void startCallsOnStart() throws InterruptedException {
         CountDownLatch onStartLatch = new CountDownLatch(1);
 
-        MockPlugin plugin = new MockPlugin(configContext) {
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext) {
             @Override
             protected void onStart() {
                 onStartLatch.countDown();
@@ -113,7 +131,7 @@ public class PluginBaseTests {
 
     @Test
     public void startThrowsIfExecutedTwice() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         plugin.start();
 
@@ -125,7 +143,7 @@ public class PluginBaseTests {
     public void stopCallsOnStop() throws InterruptedException {
         CountDownLatch onStopLatch = new CountDownLatch(1);
 
-        MockPlugin plugin = new MockPlugin(configContext) {
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext) {
             @Override
             protected void onStop() {
                 onStopLatch.countDown();
@@ -140,7 +158,7 @@ public class PluginBaseTests {
 
     @Test
     public void stopThrowsIfExecutedTwice() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         plugin.start();
 
@@ -152,7 +170,7 @@ public class PluginBaseTests {
 
     @Test
     public void stopThrowsIfApplicationNeverStarted() {
-        MockPlugin plugin = new MockPlugin(configContext);
+        MockPlugin plugin = new MockPlugin(applicationResolver, configContext);
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(plugin::stop);
@@ -160,8 +178,8 @@ public class PluginBaseTests {
 
     private static class MockPlugin extends PluginBase<ConfigSection> {
 
-        MockPlugin(ConfigContext<ConfigSection> configContext) {
-            super(configContext);
+        MockPlugin(ApplicationResolver applicationResolver, ConfigContext<ConfigSection> configContext) {
+            super(applicationResolver, configContext);
         }
     }
 }

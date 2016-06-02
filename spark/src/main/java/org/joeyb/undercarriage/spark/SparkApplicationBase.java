@@ -30,7 +30,7 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public int port() {
+    public final int port() {
         if (!isStarted()) {
             throw new IllegalStateException("The application must be started before we know its port.");
         }
@@ -42,7 +42,7 @@ public abstract class SparkApplicationBase<ConfigT extends SparkConfigSection>
      * {@inheritDoc}
      */
     @Override
-    public Service service() {
+    public final Service service() {
         return service;
     }
 

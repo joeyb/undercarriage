@@ -3,6 +3,7 @@ package org.joeyb.undercarriage.core.plugins;
 import com.google.common.collect.ImmutableList;
 
 import org.joeyb.undercarriage.core.Application;
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 
@@ -12,6 +13,11 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
  * @param <ConfigT> the app's config type
  */
 public interface Plugin<ConfigT extends ConfigSection> {
+
+    /**
+     * Returns the {@link ApplicationResolver} implementation used by the application.
+     */
+    ApplicationResolver applicationResolver();
 
     /**
      * Returns the {@link ConfigContext} implementation used by the application.

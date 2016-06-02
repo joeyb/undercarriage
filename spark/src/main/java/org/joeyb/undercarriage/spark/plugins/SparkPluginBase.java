@@ -1,5 +1,6 @@
 package org.joeyb.undercarriage.spark.plugins;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.plugins.PluginBase;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
@@ -17,8 +18,11 @@ public abstract class SparkPluginBase<ConfigT extends SparkConfigSection>
 
     private final Service service;
 
-    protected SparkPluginBase(ConfigContext<? extends ConfigT> configContext, Service service) {
-        super(configContext);
+    protected SparkPluginBase(
+            ApplicationResolver applicationResolver,
+            ConfigContext<? extends ConfigT> configContext,
+            Service service) {
+        super(applicationResolver, configContext);
 
         this.service = service;
     }

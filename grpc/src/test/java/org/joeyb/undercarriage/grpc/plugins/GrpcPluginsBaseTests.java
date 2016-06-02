@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.grpc.plugins;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
 import org.junit.Rule;
@@ -16,11 +17,14 @@ public class GrpcPluginsBaseTests {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
+    public ApplicationResolver applicationResolver;
+
+    @Mock
     public MockGrpcConfigContext configContext;
 
     @Test
     public void serverInterceptorsIsEmptyByDefault() {
-        MockGrpcPlugin plugin = new MockGrpcPlugin(configContext);
+        MockGrpcPlugin plugin = new MockGrpcPlugin(applicationResolver, configContext);
 
         assertThat(plugin.serverInterceptors())
                 .isNotNull()
@@ -29,7 +33,7 @@ public class GrpcPluginsBaseTests {
 
     @Test
     public void serverServiceDefinitionsIsEmptyByDefault() {
-        MockGrpcPlugin plugin = new MockGrpcPlugin(configContext);
+        MockGrpcPlugin plugin = new MockGrpcPlugin(applicationResolver, configContext);
 
         assertThat(plugin.serverServiceDefinitions())
                 .isNotNull()
@@ -42,8 +46,10 @@ public class GrpcPluginsBaseTests {
 
     private static class MockGrpcPlugin extends GrpcPluginBase<GrpcConfigSection> {
 
-        MockGrpcPlugin(ConfigContext<? extends GrpcConfigSection> configContext) {
-            super(configContext);
+        MockGrpcPlugin(
+                ApplicationResolver applicationResolver,
+                ConfigContext<? extends GrpcConfigSection> configContext) {
+            super(applicationResolver, configContext);
         }
     }
 }

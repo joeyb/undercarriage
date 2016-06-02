@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.core.plugins;
 
 import static java.util.Objects.requireNonNull;
 
+import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
 
@@ -12,14 +13,32 @@ import org.joeyb.undercarriage.core.config.ConfigSection;
  */
 public abstract class PluginBase<ConfigT extends ConfigSection> implements Plugin<ConfigT> {
 
+    private final ApplicationResolver applicationResolver;
     private final ConfigContext<? extends ConfigT> configContext;
 
     private volatile boolean isConfigured;
     private volatile boolean isStarted;
     private volatile boolean isStopped;
 
-    protected PluginBase(ConfigContext<? extends ConfigT> configContext) {
+    protected PluginBase(ApplicationResolver applicationResolver, ConfigContext<? extends ConfigT> configContext) {
+        this.applicationResolver = requireNonNull(applicationResolver);
         this.configContext = requireNonNull(configContext);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final ApplicationResolver applicationResolver() {
+        return applicationResolver;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final ConfigContext<? extends ConfigT> configContext() {
+        return configContext;
     }
 
     /**
@@ -34,14 +53,6 @@ public abstract class PluginBase<ConfigT extends ConfigSection> implements Plugi
         onConfigure();
 
         isConfigured = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final ConfigContext<? extends ConfigT> configContext() {
-        return configContext;
     }
 
     /**
