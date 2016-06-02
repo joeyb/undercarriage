@@ -16,6 +16,7 @@ import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.LateBoundApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.utils.GenericClass;
+import org.joeyb.undercarriage.core.utils.Randoms;
 import org.joeyb.undercarriage.jersey.config.JerseyConfigSection;
 import org.junit.Before;
 import org.junit.Rule;
@@ -107,6 +108,32 @@ public class JerseyApplicationBaseTests {
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(application::port);
+    }
+
+    @Test
+    public void portReturnsPortFromServerUri() {
+        final int port = Randoms.randInt(10000, 30000);
+
+        final String baseUri = "http://localhost:" + port;
+        final URI mockServerUri = URI.create(baseUri);
+
+        Server mockServer = PowerMockito.mock(Server.class);
+
+        when(mockServer.getURI()).thenReturn(mockServerUri);
+        when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
+
+        JerseyApplication<JerseyConfigSection> application =
+                new JerseyApplicationBase<JerseyConfigSection>(getMockServiceLocator()) {
+                    @Override
+                    Server createServer(URI createServerBaseUri) {
+                        return mockServer;
+                    }
+                };
+
+        application.start();
+
+        assertThat(application.port())
+                .isEqualTo(port);
     }
 
     @Test
