@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':core')
-}
-
-apply from: '../dagger.gradle'

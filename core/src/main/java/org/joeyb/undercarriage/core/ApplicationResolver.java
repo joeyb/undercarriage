@@ -1,7 +1,5 @@
 package org.joeyb.undercarriage.core;
 
-import org.joeyb.undercarriage.core.config.ConfigSection;
-
 import java.util.Optional;
 
 /**

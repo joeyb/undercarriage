@@ -1,0 +1,46 @@
+apply plugin: 'com.google.protobuf'
+
+dependencies {
+    compile project(':grpc')
+}
+
+apply from: '../../dagger.gradle'
+
+protobuf {
+    protoc {
+        // The version of protoc must match protobuf-java. If you don't depend on protobuf-java directly, you will be
+        // transitively depending on the protobuf-java version that grpc depends on.
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+    // Configure the output dir to be named so it's sorted after "src" to play nicely with IntelliJ 2016
+    generatedFilesBaseDir = file("$projectDir/src_generated_protos")
+}
+
+idea {
+    module {
+        def generatedProtosMainGrpcDir = file("${protobuf.generatedFilesBaseDir}/main/grpc")
+        def generatedProtosMainJavaDir = file("${protobuf.generatedFilesBaseDir}/main/java")
+        def generatedProtosTestGrpcDir = file("${protobuf.generatedFilesBaseDir}/test/grpc")
+        def generatedProtosTestJavaDir = file("${protobuf.generatedFilesBaseDir}/test/java")
+
+        sourceDirs += generatedProtosMainGrpcDir
+        sourceDirs += generatedProtosMainJavaDir
+        testSourceDirs += generatedProtosTestGrpcDir
+        testSourceDirs += generatedProtosTestJavaDir
+
+        generatedSourceDirs += generatedProtosMainGrpcDir
+        generatedSourceDirs += generatedProtosMainJavaDir
+        generatedSourceDirs += generatedProtosTestGrpcDir
+        generatedSourceDirs += generatedProtosTestJavaDir
+    }
+}
