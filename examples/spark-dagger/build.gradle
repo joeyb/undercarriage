@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':spark')
+
+    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
+}
+
+apply from: '../../dagger.gradle'
