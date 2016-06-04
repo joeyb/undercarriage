@@ -2,7 +2,7 @@
 
 The `spark` library provides support for building web applications based on the [Spark](http://sparkjava.com/) framework.
 
-To see an example of a working Spark app, check out [`spark-example`](../spark-example/).
+To see an example of a working Spark app, check out [`examples/spark-dagger`](../examples/spark-dagger/).
 
 ### `SparkApplication`
 
