@@ -14,6 +14,8 @@ There is a cost to being DI framework agnostic. JSR-330 does not currently stand
 
 The [core](core/) library provides the foundational framework for building an application.
 
+To see some real examples, check out the [`examples`](examples/) directory.
+
 ### Libraries
 
 | Library | Package |

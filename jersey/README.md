@@ -2,7 +2,7 @@
 
 The `jersey` library provides support for building web applications based on the [Jersey](https://jersey.java.net/) framework.
 
-To see an example of a working Jersey app, check out [`jersey-example`](../jersey-example/).
+To see an example of a working Jersey app, check out [`examples/jersey`](../examples/jersey/).
 
 It's important to note that Jersey is strongly tied to its dependency injection framework, HK2. Because of this, the `undercarriage` Jersey implementation cannot be DI framework agnostic.
 
