@@ -16,17 +16,4 @@ public class ExampleJerseyApplication extends JerseyApplicationBase<ExampleJerse
 
         resourceConfig().registerClasses(PingResource.class);
     }
-
-    /**
-     * The application's entry point.
-     *
-     * @param args command-line parameters
-     */
-    public static void main(String[] args) {
-        ExampleJerseyApplication application = new ExampleJerseyApplication(new ExampleJerseyApplicationBinder());
-
-        application.start();
-
-        application.stop();
-    }
 }
