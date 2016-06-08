@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':core')
+
+    compile "junit:junit:$junitVersion"
+    compile "org.assertj:assertj-core:$assertjVersion"
+    compile "org.mockito:mockito-core:$mockitoVersion"
+}
