@@ -1,6 +1,7 @@
 rootProject.name = 'undercarriage'
 include 'config-yaml'
 include 'core'
+include 'core-testing'
 include 'examples/dagger-minimal'
 include 'examples/grpc-dagger'
 include 'examples/jersey'

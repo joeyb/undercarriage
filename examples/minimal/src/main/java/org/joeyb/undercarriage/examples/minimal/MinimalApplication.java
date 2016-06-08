@@ -38,17 +38,4 @@ public class MinimalApplication extends ApplicationBase<MinimalConfig> {
     private static ConfigContext<MinimalConfig> createConfigContext() {
         return new ManualConfigContext<>(ImmutableMinimalConfig.builder().build());
     }
-
-    /**
-     * The application's entry point.
-     *
-     * @param args command-line parameters
-     */
-    public static void main(String[] args) {
-        MinimalApplication application = new MinimalApplication();
-
-        application.start();
-
-        application.stop();
-    }
 }

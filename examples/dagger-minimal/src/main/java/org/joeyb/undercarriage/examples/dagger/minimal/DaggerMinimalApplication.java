@@ -37,17 +37,4 @@ public class DaggerMinimalApplication extends ApplicationBase<DaggerMinimalConfi
 
         LOGGER.info("Stopping...");
     }
-
-    /**
-     * The application's entry point.
-     *
-     * @param args command-line parameters
-     */
-    public static void main(String[] args) {
-        DaggerMinimalApplication application = DaggerApplicationComponent.create().application();
-
-        application.start();
-
-        application.stop();
-    }
 }
