@@ -17,12 +17,18 @@ public interface JerseyConfig {
      * Returns Jersey server's base URI. If the port is specified as 0, then a random available port is chosen at
      * runtime.
      */
-    String baseUri();
+    @Value.Default
+    default String baseUri() {
+        return "http://localhost:3000";
+    }
 
     /**
      * Returns {@code boolean} indicating whether or not the application should join the {@link Thread} used by the
      * underlying server. If {@code true}, the app will block until the server returns. If {@code false}, the app will
      * continue execution after starting the serer.
      */
-    boolean joinServerThread();
+    @Value.Default
+    default boolean joinServerThread() {
+        return false;
+    }
 }
