@@ -1,7 +1,6 @@
 dependencies {
     compile project(':core')
 
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
 }
