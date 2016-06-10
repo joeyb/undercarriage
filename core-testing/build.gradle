@@ -5,3 +5,5 @@ dependencies {
     compile "org.assertj:assertj-core:$assertjVersion"
     compile "org.mockito:mockito-core:$mockitoVersion"
 }
+
+apply from: '../publish.gradle'

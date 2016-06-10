@@ -7,3 +7,5 @@ dependencies {
 
     testCompile "com.github.stefanbirkner:system-rules:$systemRulesVersion"
 }
+
+apply from: '../publish.gradle'

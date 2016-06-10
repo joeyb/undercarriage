@@ -3,3 +3,5 @@ dependencies {
 
     compile "io.grpc:grpc-all:$grpcVersion"
 }
+
+apply from: '../publish.gradle'

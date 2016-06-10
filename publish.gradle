@@ -1,0 +1,54 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+artifacts {
+    archives javadocJar, sourceJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name "${rootProject.name} ${project.name}"
+                packaging 'jar'
+                description "${project.description}"
+                url 'https://github.com/joeyb/undercarriage'
+
+                scm {
+                    connection 'scm:git:https://github.com/joeyb/undercarriage.git'
+                    developerConnection 'scm:git:https://github.com/joeyb/undercarriage.git'
+                    url 'https://github.com/joeyb/undercarriage'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'joeyb'
+                        name 'Joey Bratton'
+                        email 'joey@joeyb.org'
+                    }
+                }
+            }
+        }
+    }
+}

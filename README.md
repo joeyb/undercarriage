@@ -1,6 +1,6 @@
 # `undercarriage`
 
-[![Build Status](https://travis-ci.org/joeyb/undercarriage.svg?branch=master)](https://travis-ci.org/joeyb/undercarriage) [![codecov](https://codecov.io/gh/joeyb/undercarriage/branch/master/graph/badge.svg)](https://codecov.io/gh/joeyb/undercarriage)
+[![Build Status](https://travis-ci.org/joeyb/undercarriage.svg?branch=master)](https://travis-ci.org/joeyb/undercarriage) [![codecov](https://codecov.io/gh/joeyb/undercarriage/branch/master/graph/badge.svg)](https://codecov.io/gh/joeyb/undercarriage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.joeyb.undercarriage/core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.joeyb.undercarriage/core)
 
 `undercarriage` is a general-purpose Java application framework. The project's main design goals are:
 
