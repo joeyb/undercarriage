@@ -12,7 +12,7 @@ plugins {
     id 'nebula.provided-base' version '3.0.3'
 }
 
-subprojects {
+subprojects { project ->
     repositories {
         mavenCentral()
     }
@@ -22,8 +22,11 @@ subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'idea'
     apply plugin: 'jacoco'
-    apply plugin: 'nebula.project'
+    apply plugin: 'nebula.contacts'
+    apply plugin: 'nebula.info'
+    apply plugin: 'nebula.javadoc-jar'
     apply plugin: 'nebula.provided-base'
+    apply plugin: 'nebula.source-jar'
 
     group 'org.joeyb.undercarriage'
 
@@ -69,4 +72,11 @@ subprojects {
     }
 
     check.dependsOn jacocoTestReport
+
+    project.tasks.withType(Javadoc) {
+        failOnError = false
+    }
+    project.tasks.withType(Test) { Test testTask ->
+        testTask.testLogging.exceptionFormat = 'full'
+    }
 }
