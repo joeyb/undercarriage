@@ -34,13 +34,53 @@ public class MockConfigContextTests {
     }
 
     @Test
-    public void constructorThrowsIfGivenConfigContextIsNull() {
+    public void constructorThrowsIfGivenConfigIsNull() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> new MockConfigContext<MockConfigContextConfig>(null) { });
+                .isThrownBy(() -> new MockConfigContext<MockConfigContextConfig>(
+                        (MockConfigContextConfig) null) { });
     }
 
     @Test
     public void decoratedConfigIsMockable() {
+        final String someChildString = UUID.randomUUID().toString();
+        final int someInt = Randoms.randInt(0, 100000);
+        final String someString = UUID.randomUUID().toString();
+
+        final int mockInt = Randoms.randInt(200000, 300000);
+        final String mockString = UUID.randomUUID().toString();
+
+        ConfigContext<MockConfigContextConfig> configContext =
+                new MockConfigContext<MockConfigContextConfig>(
+                        ImmutableMockConfigContextConfig.builder()
+                                .childConfig(
+                                        ImmutableChildConfig.builder()
+                                                .someChildString(someChildString)
+                                                .build())
+                                .someInt(someInt)
+                                .someString(someString)
+                                .build()) { };
+
+        assertThat(configContext.config().childConfig().someChildString()).isEqualTo(someChildString);
+        assertThat(configContext.config().someInt()).isEqualTo(someInt);
+        assertThat(configContext.config().someString()).isEqualTo(someString);
+
+        when(configContext.config().someInt()).thenReturn(mockInt);
+        when(configContext.config().someString()).thenReturn(mockString);
+
+        assertThat(configContext.config().childConfig().someChildString()).isEqualTo(someChildString);
+        assertThat(configContext.config().someInt()).isEqualTo(mockInt);
+        assertThat(configContext.config().someString()).isEqualTo(mockString);
+    }
+
+    @Test
+    public void constructorThrowsIfGivenConfigContextIsNull() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> new MockConfigContext<MockConfigContextConfig>(
+                        (ConfigContext<MockConfigContextConfig>) null) { });
+    }
+
+    @Test
+    public void decoratedConfigContextConfigIsMockable() {
         final String someChildString = UUID.randomUUID().toString();
         final int someInt = Randoms.randInt(0, 100000);
         final String someString = UUID.randomUUID().toString();
@@ -73,7 +113,7 @@ public class MockConfigContextTests {
     }
 
     @Test
-    public void decoratedConfigIsMemoized() {
+    public void decoratedConfigContextConfigIsMemoized() {
         ConfigContext<MockConfigContextConfig> configContext =
                 new MockConfigContext<MockConfigContextConfig>(
                         new ExplodingConfigContext<>(
