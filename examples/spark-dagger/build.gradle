@@ -1,6 +1,7 @@
 dependencies {
     compile project(':spark')
 
+    testCompile project(':spark-testing')
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
 }
 

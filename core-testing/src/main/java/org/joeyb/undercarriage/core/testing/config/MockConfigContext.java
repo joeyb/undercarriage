@@ -9,7 +9,6 @@ import net.jodah.typetools.TypeResolver;
 
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
-import org.joeyb.undercarriage.core.config.ManualConfigContext;
 import org.joeyb.undercarriage.core.utils.Suppliers;
 
 import java.util.function.Supplier;

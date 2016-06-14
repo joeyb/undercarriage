@@ -1,10 +1,8 @@
 package org.joeyb.undercarriage.examples.jersey;
 
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.Mockito.mock;
-
 import org.glassfish.hk2.api.Factory;
 import org.joeyb.undercarriage.core.config.ConfigContext;
+import org.joeyb.undercarriage.core.testing.config.MockConfigContext;
 
 public class TestExampleJerseyApplicationBinder extends ExampleJerseyApplicationBinder {
 
@@ -17,9 +15,7 @@ public class TestExampleJerseyApplicationBinder extends ExampleJerseyApplication
 
         @Override
         public ConfigContext<ExampleJerseyConfig> provide() {
-            ConfigContext<ExampleJerseyConfig> configContext = super.provide();
-
-            return mock(configContext.getClass(), delegatesTo(configContext));
+            return new MockConfigContext<ExampleJerseyConfig>(super.provide()) { };
         }
     }
 }
