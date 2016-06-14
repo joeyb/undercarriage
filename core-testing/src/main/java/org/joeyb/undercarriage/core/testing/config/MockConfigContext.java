@@ -9,6 +9,7 @@ import net.jodah.typetools.TypeResolver;
 
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.config.ConfigSection;
+import org.joeyb.undercarriage.core.config.ManualConfigContext;
 import org.joeyb.undercarriage.core.utils.Suppliers;
 
 import java.util.function.Supplier;
@@ -31,16 +32,32 @@ public abstract class MockConfigContext<ConfigT extends ConfigSection> implement
     }
 
     /**
-     * Constructs {@code MockConfigContext} with a {@link ConfigContext} instance to decorate. The mock config instance
-     * returned by {@link #config()} delegates to the config returned by the given {@link ConfigContext} if no explicit
-     * mock value has been specified for the method being called on the mock.
+     * Constructs {@code MockConfigContext} with a {@link ConfigT} instance to delegate to. The mock config instance
+     * returned by {@link #config()} delegates to the given config if no explicit mock value has been specified for the
+     * method being called on the mock.
+     *
+     * <p>The mock returned by {@link #config()} will not have deep stubs. Mockito does not currently support combining
+     * mock delegation/forwarding with deep stubs.
+     *
+     * @param config the config to be delegated to
+     */
+    public MockConfigContext(ConfigT config) {
+        requireNonNull(config);
+
+        this.config = Suppliers.memoize(() -> mock(configClass(), delegatesTo(config)));
+    }
+
+    /**
+     * Constructs {@code MockConfigContext} with a {@link ConfigContext} instance to delegate to. The mock config
+     * instance returned by {@link #config()} delegates to the config returned by the given {@link ConfigContext} if no
+     * explicit mock value has been specified for the method being called on the mock.
      *
      * <p>The real config instance is fetched and memoized the first time the mock config is fetched.
      *
      * <p>The mock returned by {@link #config()} will not have deep stubs. Mockito does not currently support combining
      * mock delegation/forwarding with deep stubs.
      *
-     * @param configContext the config context to be decorated
+     * @param configContext the config context to be delegated to
      */
     public MockConfigContext(ConfigContext<ConfigT> configContext) {
         requireNonNull(configContext);
