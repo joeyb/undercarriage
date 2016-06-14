@@ -6,7 +6,7 @@ import org.joeyb.undercarriage.examples.grpc.dagger.HelloWorldGrpcApplication;
 
 import javax.inject.Singleton;
 
-@Component(modules = ApplicationModule.class)
+@Component(modules = ConfigContextModule.class)
 @Singleton
 public interface ApplicationComponent {
 

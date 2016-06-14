@@ -12,7 +12,7 @@ import org.joeyb.undercarriage.grpc.config.ImmutableGrpcConfig;
 import javax.inject.Singleton;
 
 @Module
-public class ApplicationModule {
+public class ConfigContextModule {
 
     @Provides
     @Singleton

@@ -2,7 +2,6 @@ package org.joeyb.undercarriage.examples.dagger.minimal;
 
 import org.joeyb.undercarriage.core.ApplicationBase;
 import org.joeyb.undercarriage.core.config.ConfigContext;
-import org.joeyb.undercarriage.examples.dagger.minimal.dagger.DaggerApplicationComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

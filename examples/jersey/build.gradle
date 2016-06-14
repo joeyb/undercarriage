@@ -1,5 +1,6 @@
 dependencies {
     compile project(':jersey')
 
+    testCompile project(':jersey-testing')
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
 }

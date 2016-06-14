@@ -2,6 +2,8 @@ apply plugin: 'com.google.protobuf'
 
 dependencies {
     compile project(':grpc')
+
+    testCompile project(':grpc-testing')
 }
 
 apply from: '../../dagger.gradle'

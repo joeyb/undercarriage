@@ -6,7 +6,7 @@ import org.joeyb.undercarriage.examples.spark.dagger.SparkDaggerApplication;
 
 import javax.inject.Singleton;
 
-@Component(modules = ApplicationModule.class)
+@Component(modules = {ApplicationModule.class, ConfigContextModule.class})
 @Singleton
 public interface ApplicationComponent {
 

@@ -6,21 +6,29 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import org.joeyb.undercarriage.examples.grpc.dagger.dagger.DaggerApplicationComponent;
+import org.joeyb.undercarriage.examples.grpc.dagger.dagger.MockConfigContextModule;
+import org.joeyb.undercarriage.grpc.testing.GrpcApplicationTestRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.UUID;
 
 public class HelloWorldGrpcApplicationTests {
 
+    @Rule
+    public final GrpcApplicationTestRule<HelloWorldConfig, HelloWorldGrpcApplication> applicationTestRule =
+            new GrpcApplicationTestRule<>(
+                    () -> DaggerApplicationComponent.builder()
+                            .configContextModule(new MockConfigContextModule())
+                            .build()
+                            .application());
+
     @Test
     public void sayHelloEndpointReturnsExpectedResponse() {
         final String name = UUID.randomUUID().toString();
 
-        HelloWorldGrpcApplication application = DaggerApplicationComponent.create().application();
-
-        application.start();
-
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", application.port())
+        final ManagedChannel channel = ManagedChannelBuilder
+                .forAddress("localhost", applicationTestRule.application().port())
                 .usePlaintext(true)
                 .build();
 
@@ -31,8 +39,6 @@ public class HelloWorldGrpcApplicationTests {
                 .build();
 
         HelloResponse response = blockingStub.sayHello(request);
-
-        application.stop();
 
         assertThat(response.getMessage()).isEqualTo("Hello " + name);
     }
