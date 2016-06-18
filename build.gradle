@@ -10,8 +10,8 @@ buildscript {
 }
 
 plugins {
-    id 'nebula.project' version '3.1.0'
-    id 'nebula.provided-base' version '3.0.3'
+    id 'nebula.project' version '3.2.0'
+    id 'nebula.provided-base' version '3.1.0'
 }
 
 apply plugin: 'com.github.ben-manes.versions'
