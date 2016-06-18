@@ -1,16 +1,20 @@
 buildscript {
     repositories {
+        jcenter()
         mavenLocal()
     }
     dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.12.0'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
     }
 }
 
 plugins {
-    id 'nebula.project' version '3.1.0'
-    id 'nebula.provided-base' version '3.0.3'
+    id 'nebula.project' version '3.2.0'
+    id 'nebula.provided-base' version '3.1.0'
 }
+
+apply plugin: 'com.github.ben-manes.versions'
 
 subprojects { project ->
     repositories {
