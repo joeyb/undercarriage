@@ -2,7 +2,7 @@ package org.joeyb.undercarriage.examples.grpc.dagger;
 
 import io.grpc.stub.StreamObserver;
 
-public class GreeterImpl implements GreeterGrpc.Greeter {
+public class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
     @Override
     public void sayHello(HelloRequest req, StreamObserver<HelloResponse> responseObserver) {

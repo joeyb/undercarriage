@@ -21,6 +21,6 @@ public class HelloWorldGrpcApplication extends GrpcApplicationBase<HelloWorldCon
     protected Iterable<ServerServiceDefinition> enabledServerServiceDefinitions() {
         return Iterables.concat(
                 super.enabledServerServiceDefinitions(),
-                ImmutableList.of(GreeterGrpc.bindService(new GreeterImpl())));
+                ImmutableList.of(new GreeterImpl().bindService()));
     }
 }
