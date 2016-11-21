@@ -221,7 +221,7 @@ public abstract class ApplicationBase<ConfigT extends ConfigSection> implements 
         final ImmutableList<Class<?>> disabledPlugins = ImmutableList.copyOf(disabledPlugins());
 
         return ImmutableList.copyOf(pluginSorter().sort(ImmutableList.copyOf(enabledPlugins()).stream()
-                .filter(p -> !disabledPlugins.stream().anyMatch(dp -> dp.isAssignableFrom(p.getClass())))
+                .filter(p -> disabledPlugins.stream().noneMatch(dp -> dp.isAssignableFrom(p.getClass())))
                 .collect(Collectors.toList())));
     }
 

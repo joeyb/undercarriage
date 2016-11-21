@@ -17,6 +17,7 @@ import io.grpc.ServerServiceDefinition;
 import org.joeyb.undercarriage.core.ApplicationResolver;
 import org.joeyb.undercarriage.core.config.ConfigContext;
 import org.joeyb.undercarriage.core.plugins.Plugin;
+import org.joeyb.undercarriage.core.utils.Ports;
 import org.joeyb.undercarriage.core.utils.Randoms;
 import org.joeyb.undercarriage.grpc.config.GrpcConfigSection;
 import org.joeyb.undercarriage.grpc.plugins.GrpcPlugin;
@@ -327,6 +328,23 @@ public class GrpcApplicationBaseTests {
         for (ServerServiceDefinition serverServiceDefinition : interceptedServerServiceDefinitions) {
             verify(serverBuilder).addService(eq(serverServiceDefinition));
         }
+    }
+
+    @Test
+    public void startCreatesAndStartsRealGrpcServer() {
+        final int port = Ports.availablePort();
+
+        when(configContext.config().grpc().port()).thenReturn(port);
+
+        GrpcApplication<GrpcConfigSection> application =
+                new GrpcApplicationBase<GrpcConfigSection>(configContext) { };
+
+        application.start();
+
+        assertThat(application.port()).isEqualTo(port);
+        assertThat(application.isStarted()).isTrue();
+
+        application.stop();
     }
 
     private static class MockGrpcApplication extends GrpcApplicationBase<GrpcConfigSection> {

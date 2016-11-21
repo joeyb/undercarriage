@@ -142,6 +142,17 @@ public abstract class JerseyApplicationBase<ConfigT extends JerseyConfigSection>
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        try {
+            server.stop();
+        } catch (Exception e) {
+            LOGGER.info("Jersey failed during stop", e);
+        }
+    }
+
     private static ServiceLocator createServiceLocator(Binder binder) {
         final ServiceLocator serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
 
