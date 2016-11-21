@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.jersey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,21 +22,15 @@ import org.joeyb.undercarriage.jersey.config.JerseyConfigSection;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Server.class)
 public class JerseyApplicationBaseTests {
 
     @Rule
@@ -117,7 +112,7 @@ public class JerseyApplicationBaseTests {
         final String baseUri = "http://localhost:" + port;
         final URI mockServerUri = URI.create(baseUri);
 
-        Server mockServer = PowerMockito.mock(Server.class);
+        Server mockServer = mock(Server.class);
 
         when(mockServer.getURI()).thenReturn(mockServerUri);
         when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
@@ -140,7 +135,7 @@ public class JerseyApplicationBaseTests {
     public void startCreatesAndStartsJerseyServerWithoutJoin() throws Exception {
         final String baseUri = "http://localhost:0";
 
-        Server mockServer = PowerMockito.mock(Server.class);
+        Server mockServer = mock(Server.class);
 
         when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
         when(configContext.config().jersey().joinServerThread()).thenReturn(false);
@@ -165,7 +160,7 @@ public class JerseyApplicationBaseTests {
     public void startCreatesAndStartsJerseyServerWithJoin() throws Exception {
         final String baseUri = "http://localhost:0";
 
-        Server mockServer = PowerMockito.mock(Server.class);
+        Server mockServer = mock(Server.class);
 
         when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
         when(configContext.config().jersey().joinServerThread()).thenReturn(true);
