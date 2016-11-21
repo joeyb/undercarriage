@@ -2,6 +2,7 @@ package org.joeyb.undercarriage.jersey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -179,6 +180,105 @@ public class JerseyApplicationBaseTests {
 
         verify(mockServer).start();
         verify(mockServer).join();
+    }
+
+    @Test
+    public void stopStopsJerseyServer() throws Exception {
+        final String baseUri = "http://localhost:0";
+
+        Server mockServer = mock(Server.class);
+
+        when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
+        when(configContext.config().jersey().joinServerThread()).thenReturn(true);
+
+        JerseyApplication<JerseyConfigSection> application =
+                new JerseyApplicationBase<JerseyConfigSection>(getMockServiceLocator()) {
+                    @Override
+                    Server createServer(URI createServerBaseUri) {
+                        assertThat(createServerBaseUri.toString()).isEqualTo(baseUri);
+
+                        return mockServer;
+                    }
+                };
+
+        application.start();
+
+        verify(mockServer, never()).stop();
+
+        application.stop();
+
+        verify(mockServer).stop();
+    }
+
+    @Test
+    public void interruptExceptionAfterJoinIsCaughtAndStartIsCompleted() throws Exception {
+        final String baseUri = "http://localhost:0";
+
+        Server mockServer = mock(Server.class);
+
+        when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
+        when(configContext.config().jersey().joinServerThread()).thenReturn(true);
+        doThrow(InterruptedException.class).when(mockServer).join();
+
+        JerseyApplication<JerseyConfigSection> application =
+                new JerseyApplicationBase<JerseyConfigSection>(getMockServiceLocator()) {
+                    @Override
+                    Server createServer(URI createServerBaseUri) {
+                        assertThat(createServerBaseUri.toString()).isEqualTo(baseUri);
+
+                        return mockServer;
+                    }
+                };
+
+        application.start();
+
+        verify(mockServer).start();
+        verify(mockServer).join();
+
+        assertThat(application.isStarted()).isTrue();
+    }
+
+    @Test
+    public void startCreatesAndStartsRealJerseyServer() throws Exception {
+        final String baseUri = "http://localhost:0";
+
+        when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
+        when(configContext.config().jersey().joinServerThread()).thenReturn(false);
+
+        JerseyApplication<JerseyConfigSection> application =
+                new JerseyApplicationBase<JerseyConfigSection>(getMockServiceLocator()) { };
+
+        application.start();
+
+        assertThat(application.port()).isPositive();
+
+        application.stop();
+    }
+
+    @Test
+    public void exceptionDuringJerseyStopIsCaughtAndStopIsCompleted() throws Exception {
+        final String baseUri = "http://localhost:0";
+
+        Server mockServer = mock(Server.class);
+
+        when(configContext.config().jersey().baseUri()).thenReturn(baseUri);
+        when(configContext.config().jersey().joinServerThread()).thenReturn(true);
+        doThrow(RuntimeException.class).when(mockServer).stop();
+
+        JerseyApplication<JerseyConfigSection> application =
+                new JerseyApplicationBase<JerseyConfigSection>(getMockServiceLocator()) {
+                    @Override
+                    Server createServer(URI createServerBaseUri) {
+                        assertThat(createServerBaseUri.toString()).isEqualTo(baseUri);
+
+                        return mockServer;
+                    }
+                };
+
+        application.start();
+        application.stop();
+
+        assertThat(application.isStopped()).isTrue();
     }
 
     private ServiceLocator getMockServiceLocator() {

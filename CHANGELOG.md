@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.1 - 2016-11-20
+
+- Fixed `JerseyApplicationBase` so that the underlying Jersey `Server` is stopped when the application is stopped.
+
 ### 1.3.0 - 2016-11-20
 
 - Removed test dependency on `powermock`.
