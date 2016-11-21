@@ -1,5 +1,19 @@
 # Changelog
 
+### 1.3.0 - 2016-11-20
+
+- Removed test dependency on `powermock`.
+- Updated `commons-lang3` to `3.5`.
+- Updated `dagger` to `2.7`.
+- Updated `guava` to `20.0`.
+- Updated `immutables` to `2.3.9`.
+- Updated `jackson` to `2.8.5`.
+- Updated `jersey` to `2.24`.
+- Updated `mockito` to `2.2.21`.
+- Updated `protobuf` to `3.1.0`.
+- Updated `spark` to `2.5.2`.
+- Updated `typetools` to `0.4.8`.
+
 ### 1.2.0 - 2016-08-27
 
 - Updated `dagger` to `2.6.1`

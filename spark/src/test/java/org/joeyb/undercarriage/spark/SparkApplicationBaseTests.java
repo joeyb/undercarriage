@@ -3,6 +3,7 @@ package org.joeyb.undercarriage.spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -11,19 +12,13 @@ import org.joeyb.undercarriage.core.utils.Randoms;
 import org.joeyb.undercarriage.spark.config.SparkConfigSection;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import spark.Service;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Service.class)
 public class SparkApplicationBaseTests {
 
     @Rule
@@ -34,7 +29,7 @@ public class SparkApplicationBaseTests {
 
     @Test
     public void portThrowsIfNotStarted() {
-        Service service = PowerMockito.mock(Service.class);
+        Service service = mock(Service.class);
 
         MockSparkApplication application = new MockSparkApplication(configContext, service);
 
@@ -46,7 +41,7 @@ public class SparkApplicationBaseTests {
     public void nonZeroPortIsSetByStart() {
         final int port = Randoms.randInt(1000, 5000);
 
-        Service service = PowerMockito.mock(Service.class);
+        Service service = mock(Service.class);
 
         when(configContext.config().spark().port()).thenReturn(port);
 
@@ -61,7 +56,7 @@ public class SparkApplicationBaseTests {
 
     @Test
     public void randomPortIsSetForZeroPortByStart() {
-        Service service = PowerMockito.mock(Service.class);
+        Service service = mock(Service.class);
 
         when(configContext.config().spark().port()).thenReturn(0);
 
@@ -76,7 +71,7 @@ public class SparkApplicationBaseTests {
 
     @Test
     public void serviceInitIsCalledByStart() {
-        Service service = PowerMockito.mock(Service.class);
+        Service service = mock(Service.class);
 
         MockSparkApplication application = new MockSparkApplication(configContext, service);
 
@@ -87,7 +82,7 @@ public class SparkApplicationBaseTests {
 
     @Test
     public void serviceAwaitInitializationIsCalledByStart() {
-        Service service = PowerMockito.mock(Service.class);
+        Service service = mock(Service.class);
 
         MockSparkApplication application = new MockSparkApplication(configContext, service);
 
