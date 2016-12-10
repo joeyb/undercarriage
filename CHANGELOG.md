@@ -1,5 +1,15 @@
 # Changelog
 
+### 1.3.2 - 2016-12-10
+
+- Updated `assertj` to `3.6.1`.
+- Updated `dagger` to `2.8`.
+- Updated `grpc` to `1.0.2`.
+- Updated `immutables` to `2.3.10`.
+- Updated `jersey` to `2.25`.
+- Updated `mockito` to `2.3.0`.
+- Updated `spark` to `2.5.4`.
+
 ### 1.3.1 - 2016-11-20
 
 - Fixed `JerseyApplicationBase` so that the underlying Jersey `Server` is stopped when the application is stopped.
