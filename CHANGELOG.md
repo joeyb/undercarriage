@@ -1,5 +1,16 @@
 # Changelog
 
+### 1.3.3 - 2017-01-31
+
+- Updated `assertj` to `3.6.2`.
+- Updated `grpc` to `1.1.1`.
+- Updated `guava` to `21.0`.
+- Updated `immutables` to `2.4.2`.
+- Updated `jackson` to `2.8.6`.
+- Updated `mockito` to `2.7.1`.
+- Updated `protobuf` to `3.2.0`.
+- Updated `slf4j` to `1.7.22`.
+
 ### 1.3.2 - 2016-12-10
 
 - Updated `assertj` to `3.6.1`.
